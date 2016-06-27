@@ -1,7 +1,5 @@
 group 'core'
 dependencies {
-    compile hibernate_core
-    compile hibernate_java8
     compile kotlin
     compile jackson_annotations
 }

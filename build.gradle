@@ -2,8 +2,8 @@ group 'TV Series Compaion'
 def sourceVersion = '1.0-SNAPSHOT'
 def sourceComp = 1.8
 def spring_version = '4.2.5.RELEASE'
-def hibernate_version = '5.1.0.Final'
 def postgres_version = '9.4.1208.jre7'
+def hsqldb_version = '2.3.4'
 def junit_version = '4.12'
 def apache_commons_lang_version = '3.4'
 def apache_commons_collections_version = '4.1'
@@ -19,8 +19,6 @@ def slf4j_log4j2_binding_version = '2.6'
 def jcl_over_slf4j_version = '1.7.21'
 
 ext {
-    hibernate_core = "org.hibernate:hibernate-core:$hibernate_version"
-    hibernate_java8 = "org.hibernate:hibernate-java8:$hibernate_version"
     spring_context = "org.springframework:spring-context:$spring_version"
     spring_orm = "org.springframework:spring-orm:$spring_version"
     spring_test = "org.springframework:spring-test:$spring_version"
@@ -33,6 +31,7 @@ ext {
     jackson_datatype_jsr310 = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
     jackson_kotlin_module = "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
     postgres = "org.postgresql:postgresql:$postgres_version"
+    hsqldb = "org.hsqldb:hsqldb:$hsqldb_version"
     http_client = "org.apache.httpcomponents:httpclient:$http_client_version"
     apache_commons_io = "commons-io:commons-io:$apache_commons_io_version"
     kotlin = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -60,7 +59,7 @@ subprojects {
     }
     dependencies {
         compile slf4j, log4j2, slf4j_log4j2_binding, jcl_over_slf4j
-        testCompile spring_test, junit
+        testCompile spring_test, junit, hsqldb
     }
     configurations {
         /* For proper SLF4J integration with Spring */

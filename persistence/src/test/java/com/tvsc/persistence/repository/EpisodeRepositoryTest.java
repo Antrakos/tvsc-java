@@ -1,10 +1,12 @@
 package com.tvsc.persistence.repository;
 
+import com.tvsc.core.AppProfiles;
 import com.tvsc.persistence.config.PersistenceConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,6 +21,7 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = PersistenceConfig.class)
+@ActiveProfiles(AppProfiles.TEST)
 public class EpisodeRepositoryTest {
     @Autowired
     EpisodeRepository episodeRepository;
@@ -30,7 +33,7 @@ public class EpisodeRepositoryTest {
     public void getEpisodes() {
         List<Long> episodes = episodeRepository.getEpisodes(USER_ID, 78901L);
         assertThat(episodes, is(notNullValue()));
-        assertThat(episodes.size(), is(equalTo(23)));
+        assertThat(episodes.size(), is(equalTo(19)));
     }
 
     @Test

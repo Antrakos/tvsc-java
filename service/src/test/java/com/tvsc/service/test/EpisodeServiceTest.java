@@ -1,21 +1,22 @@
 package com.tvsc.service.test;
 
+import com.tvsc.core.AppProfiles;
 import com.tvsc.core.model.Episode;
 import com.tvsc.service.config.ServiceConfig;
 import com.tvsc.service.services.EpisodeService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.io.IOException;
 
 /**
  * @author Taras Zubrei
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceConfig.class)
+@ActiveProfiles(AppProfiles.TEST)
 public class EpisodeServiceTest {
     @Autowired
     private EpisodeService episodeService;

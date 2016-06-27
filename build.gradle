@@ -5,8 +5,8 @@ def spring_version = '4.2.5.RELEASE'
 def postgres_version = '9.4.1208.jre7'
 def hsqldb_version = '2.3.4'
 def junit_version = '4.12'
-def apache_commons_lang_version = '3.4'
-def apache_commons_collections_version = '4.1'
+//def apache_commons_lang_version = '3.4'
+//def apache_commons_collections_version = '4.1'
 def jackson_version = '2.7.5'
 def http_client_version = '4.5.2'
 def apache_commons_io_version = '2.5'
@@ -18,6 +18,14 @@ def log4j2_version = '2.6'
 def slf4j_log4j2_binding_version = '2.6'
 def jcl_over_slf4j_version = '1.7.21'
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.2-1"
+    }
+}
 ext {
     spring_context = "org.springframework:spring-context:$spring_version"
     spring_orm = "org.springframework:spring-orm:$spring_version"
@@ -37,16 +45,9 @@ ext {
     kotlin = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     junit = "junit:junit:$junit_version"
     fishbowl = "com.github.stefanbirkner:fishbowl:$fishbowl_version";
-
-
-
-    /* Logging bridge */
     slf4j = "org.slf4j:slf4j-api:$slf4j_version"
-    /* Logging framework */
     log4j2 = "org.apache.logging.log4j:log4j-core:$log4j2_version"
-    /* Bridge-implementation binding */
     slf4j_log4j2_binding = "org.apache.logging.log4j:log4j-slf4j-impl:$slf4j_log4j2_binding_version"
-    /* Commons-logging redirection to SLF4J. Make sure commons-logging excluded from Spring */
     jcl_over_slf4j = "org.slf4j:jcl-over-slf4j:$jcl_over_slf4j_version"
 
 }
@@ -61,8 +62,5 @@ subprojects {
         compile slf4j, log4j2, slf4j_log4j2_binding, jcl_over_slf4j
         testCompile spring_test, junit, hsqldb
     }
-    configurations {
-        /* For proper SLF4J integration with Spring */
-        compile.exclude group: "commons-logging"
-    }
+    configurations.compile.exclude group: "commons-logging"
 }

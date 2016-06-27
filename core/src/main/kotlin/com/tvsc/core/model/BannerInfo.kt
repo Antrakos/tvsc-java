@@ -16,8 +16,8 @@ data class BannerInfo(
         return this.ratingsInfo?.average!!.compareTo(other.ratingsInfo!!.average);
     }
 
+    data class RatingsInfo(
+            @JsonProperty var average: Double,
+            @JsonProperty var count: Long
+    )
 };
-data class RatingsInfo(
-        @JsonProperty var average: Double,
-        @JsonProperty var count: Long
-)

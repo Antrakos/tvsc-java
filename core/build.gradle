@@ -1,4 +1,5 @@
 group 'core'
+apply plugin: 'kotlin'
 dependencies {
     compile kotlin
     compile jackson_annotations

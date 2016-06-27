@@ -1,0 +1,5 @@
+rootProject.name = 'TV Series Compaion'
+
+include 'core'
+include 'persistence'
+include 'service'

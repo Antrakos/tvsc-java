@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Appenders>
+        <RollingFile name="RollingFile" fileName="main.log"
+                     filePattern="${path}\main-%d{yyyy-MM-dd}-%i.log" append="false">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level [%logger{1.}] - %msg%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="1 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level [%logger{1.}] - %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.tvsc" level="DEBUG"/>
+
+        <Root level="INFO">
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

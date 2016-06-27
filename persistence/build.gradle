@@ -1,0 +1,7 @@
+group 'persistence'
+dependencies {
+    compile project(':core')
+    compile spring_context
+    compile spring_orm
+    compile postgres
+}

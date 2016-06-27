@@ -6,6 +6,8 @@ import com.tvsc.service.config.ServiceConfig;
 import com.tvsc.service.services.SerialService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -17,6 +19,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 /**
  * @author Taras Zubrei
  */
+@RunWith(JUnitPlatform.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = ServiceConfig.class)
 @ActiveProfiles(AppProfiles.TEST)

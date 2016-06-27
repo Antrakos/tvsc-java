@@ -5,6 +5,8 @@ import com.tvsc.persistence.config.PersistenceConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,6 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * @author Taras Zubrei
  */
+@RunWith(JUnitPlatform.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = PersistenceConfig.class)
 @ActiveProfiles(AppProfiles.TEST)

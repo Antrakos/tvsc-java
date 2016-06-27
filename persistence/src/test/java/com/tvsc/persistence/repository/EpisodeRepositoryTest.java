@@ -2,24 +2,26 @@ package com.tvsc.persistence.repository;
 
 import com.tvsc.core.AppProfiles;
 import com.tvsc.persistence.config.PersistenceConfig;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.sql.BatchUpdateException;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Taras Zubrei
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = PersistenceConfig.class)
 @ActiveProfiles(AppProfiles.TEST)
 public class EpisodeRepositoryTest {
@@ -42,13 +44,14 @@ public class EpisodeRepositoryTest {
         episodeRepository.setUnwatched(USER_ID, 78901L, ABSENT_IDS);
     }
 
-    @Test(expected = DuplicateKeyException.class)
+    @Test
     public void setWatchedAlreadyWatchedEpisodeExpectedDuplicatedKey() {
-        episodeRepository.setWatched(USER_ID, 78901L, PRESENT_IDS);
+        Assertions.expectThrows(DuplicateKeyException.class, () -> episodeRepository.setWatched(USER_ID, 78901L, PRESENT_IDS));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void setUnwatchedYetNotWatchedEpisodeExpectedDuplicatedKey() {
-        episodeRepository.setUnwatched(USER_ID, 78901L, ABSENT_IDS);
+        RuntimeException exception = Assertions.expectThrows(RuntimeException.class, () -> episodeRepository.setUnwatched(USER_ID, 78901L, ABSENT_IDS));
+        assertThat(exception.getCause(), is(instanceOf(BatchUpdateException.class)));
     }
 }

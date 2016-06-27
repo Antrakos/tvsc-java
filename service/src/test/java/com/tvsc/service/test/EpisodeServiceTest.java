@@ -4,17 +4,17 @@ import com.tvsc.core.AppProfiles;
 import com.tvsc.core.model.Episode;
 import com.tvsc.service.config.ServiceConfig;
 import com.tvsc.service.services.EpisodeService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * @author Taras Zubrei
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = ServiceConfig.class)
 @ActiveProfiles(AppProfiles.TEST)
 public class EpisodeServiceTest {

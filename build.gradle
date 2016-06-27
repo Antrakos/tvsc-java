@@ -4,7 +4,6 @@ def sourceComp = 1.8
 def spring_version = '4.2.5.RELEASE'
 def postgres_version = '9.4.1208.jre7'
 def hsqldb_version = '2.3.4'
-def junit_version = '4.12'
 //def apache_commons_lang_version = '3.4'
 //def apache_commons_collections_version = '4.1'
 def jackson_version = '2.7.5'
@@ -12,18 +11,21 @@ def http_client_version = '4.5.2'
 def apache_commons_io_version = '2.5'
 def kotlin_version = '1.0.2-1'
 def fishbowl_version = '1.4.0'
-
 def slf4j_version = '1.7.21'
 def log4j2_version = '2.6'
 def slf4j_log4j2_binding_version = '2.6'
 def jcl_over_slf4j_version = '1.7.21'
+def junit_jupiter_version = '5.0.0-SNAPSHOT'
+def hamcrest_version = '1.3'
 
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.2-1"
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-SNAPSHOT'
     }
 }
 ext {
@@ -32,7 +34,6 @@ ext {
     spring_test = "org.springframework:spring-test:$spring_version"
 //    apache_commons_lang = "org.apache.commons:commons-lang3:$apache_commons_lang_version"
 //    apache_commons_collections4 = "org.apache.commons:commons-collections4:$apache_commons_collections_version"
-    junit = "junit:junit:$junit_version"
     jackson_core = "com.fasterxml.jackson.core:jackson-core:$jackson_version"
     jackson_annotations = "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
     jackson_databind = "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
@@ -43,24 +44,39 @@ ext {
     http_client = "org.apache.httpcomponents:httpclient:$http_client_version"
     apache_commons_io = "commons-io:commons-io:$apache_commons_io_version"
     kotlin = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    junit = "junit:junit:$junit_version"
     fishbowl = "com.github.stefanbirkner:fishbowl:$fishbowl_version";
     slf4j = "org.slf4j:slf4j-api:$slf4j_version"
     log4j2 = "org.apache.logging.log4j:log4j-core:$log4j2_version"
+    log4j_jul = "org.apache.logging.log4j:log4j-jul:$log4j2_version"
     slf4j_log4j2_binding = "org.apache.logging.log4j:log4j-slf4j-impl:$slf4j_log4j2_binding_version"
     jcl_over_slf4j = "org.slf4j:jcl-over-slf4j:$jcl_over_slf4j_version"
+    junit_jupiter_api = "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
+    junit_jupiter_engine = "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"
+    spring_test_junit5 = files('libs/spring-test-junit5-1.0.0-SNAPSHOT.jar')
+    hamcrest = "org.hamcrest:hamcrest-all:$hamcrest_version"
 
 }
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'org.junit.platform.gradle.plugin'
     sourceCompatibility = sourceComp
 
     repositories {
         mavenCentral()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
     dependencies {
         compile slf4j, log4j2, slf4j_log4j2_binding, jcl_over_slf4j
-        testCompile spring_test, junit, hsqldb
+        testCompile spring_test, hamcrest, hsqldb, junit_jupiter_api, junit_jupiter_engine, spring_test_junit5, log4j_jul
     }
     configurations.compile.exclude group: "commons-logging"
+    junitPlatform {
+        engines {
+             include 'junit-jupiter'
+        }
+        tags {
+            exclude 'slow'
+        }
+        logManager 'org.apache.logging.log4j.jul.LogManager'
+    }
 }

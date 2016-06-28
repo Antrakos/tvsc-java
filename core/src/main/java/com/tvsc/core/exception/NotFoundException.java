@@ -8,9 +8,6 @@ public class NotFoundException extends ApplicationException {
         super(message);
     }
 
-    @Override
-    public void afterThrowing() {}
-
     public NotFoundException(String message, Throwable exception) {
         super(message, exception);
     }

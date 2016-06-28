@@ -20,8 +20,6 @@ public abstract class ApplicationException extends RuntimeException {
         this.cause = cause;
     }
 
-    public abstract void afterThrowing();
-
     public ApplicationException(String message, Throwable cause) {
         super(message, cause);
         this.cause = cause;

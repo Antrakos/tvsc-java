@@ -1,19 +1,13 @@
 package com.tvsc.service.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tvsc.core.exception.ExceptionUtil;
 import com.tvsc.core.model.BannerInfo;
 import com.tvsc.core.model.Episode;
 import com.tvsc.core.model.Season;
 import com.tvsc.core.model.Serial;
 import com.tvsc.persistence.repository.SerialRepository;
 import com.tvsc.service.Constants;
-import com.tvsc.service.exception.HttpException;
+import com.tvsc.service.utils.HttpUtils;
 import com.tvsc.service.utils.JsonUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +21,6 @@ import java.util.stream.Collectors;
 @Service
 public class SerialService {
     @Autowired
-    private HttpClient httpClient;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
     private EpisodeService episodeService;
     @Autowired
     private JsonUtils jsonUtils;
@@ -38,35 +28,23 @@ public class SerialService {
     private SerialRepository serialRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    HttpUtils httpUtils;
 
     public Serial getSerialInfo(Long id) {
-        final HttpGet request = new HttpGet(Constants.SERIES + id);
-        final HttpResponse response = ExceptionUtil.wrapCheckedException(() -> httpClient.execute(request), new HttpException(request));
-        Serial serial = ExceptionUtil.wrapCheckedException(() -> (Serial) objectMapper.reader().forType(Serial.class).withRootName(Constants.ROOT).readValue(response.getEntity().getContent()), new HttpException(request));
-        request.releaseConnection();
-        return serial;
+        return jsonUtils.getSingleObject(httpUtils.get(Constants.SERIES + id), Serial.class);
     }
 
     public Serial getSerial(Long id) {
-        final HttpGet requestSeries = new HttpGet(Constants.SERIES + id);
-        final HttpResponse responseSeries = ExceptionUtil.wrapCheckedException(() -> httpClient.execute(requestSeries), new HttpException(requestSeries));
-        Serial serial = ExceptionUtil.wrapCheckedException(() -> (Serial) objectMapper.reader().forType(Serial.class).withRootName(Constants.ROOT).readValue(responseSeries.getEntity().getContent()), new HttpException(requestSeries));
-        requestSeries.releaseConnection();
+        Serial serial = jsonUtils.getSingleObject(httpUtils.get(Constants.SERIES + id), Serial.class);
+        List<BannerInfo> seasonBanners = jsonUtils.getListData(httpUtils.get(Constants.SERIES + id + "/images/query?keyType=season"), BannerInfo.class);
 
-        final HttpGet requestBanners = new HttpGet(Constants.SERIES + id + "/images/query?keyType=season");
-        final HttpResponse responseBanners = ExceptionUtil.wrapCheckedException(() -> httpClient.execute(requestBanners), new HttpException(requestBanners));
-        List<BannerInfo> seasonBanners = ExceptionUtil.wrapCheckedException(() -> jsonUtils.getListData(IOUtils.toString(responseBanners.getEntity().getContent(), "utf-8"), BannerInfo.class), new HttpException(requestBanners));
-        requestBanners.releaseConnection();
-
-        final HttpGet requestPosters = new HttpGet(Constants.SERIES + id + "/images/query?keyType=poster");
-        final HttpResponse responsePosters = ExceptionUtil.wrapCheckedException(() -> httpClient.execute(requestPosters), new HttpException(requestPosters));
-        final String poster = ExceptionUtil.wrapCheckedException(() -> jsonUtils.getListData(IOUtils.toString(responsePosters.getEntity().getContent(), "utf-8"), BannerInfo.class), new HttpException(requestPosters))
+        final String poster = jsonUtils.getListData(httpUtils.get(Constants.SERIES + id + "/images/query?keyType=poster"), BannerInfo.class)
                 .stream()
                 .max(BannerInfo::compareTo)
                 .map(BannerInfo::getFileName)
                 .get(); //TODO: null safety
         serial.setPoster(poster);
-        requestPosters.releaseConnection();
 
         final Map<Integer, String> banners = seasonBanners.stream()
                 .collect(Collectors.groupingBy(BannerInfo::getKey))

@@ -9,7 +9,4 @@ public class PersistenceException extends ApplicationException {
     public PersistenceException(String message, Throwable cause) {
         super(message, cause);
     }
-
-    @Override
-    public void afterThrowing() {}
 }

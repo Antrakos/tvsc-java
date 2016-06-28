@@ -15,11 +15,10 @@ public class ExceptionUtil {
         try {
             return statement.evaluate();
         } catch (RuntimeException e) {
-            exception.afterThrowing();
             throw e;
         } catch (Throwable e) {
             exception.setCause(e);
-            exception.afterThrowing();
+            LOGGER.error(exception.toString());
             throw exception;
         }
     }

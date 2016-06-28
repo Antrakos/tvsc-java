@@ -13,8 +13,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.Matchers.empty;
 
 /**
  * @author Taras Zubrei
@@ -28,14 +31,15 @@ public class SerialServiceTest {
     private SerialService serialService;
 
     @Test
-    public void getSerial() {
-        serialService.getSerialInfo(78901L);
-        Serial serial = serialService.getSerial(78901L);
-        assertThat("Serial must not be null", serial, notNullValue());
+    public void whenGetSerialInfoCheckIfItHasOnlyGeneralInfo() {
+        Serial serialInfo = serialService.getSerialInfo(78901L);
+        assertThat(serialInfo, notNullValue());
+        assertThat(serialInfo.getSeasons(), is(nullValue()));
     }
 
     @Test
-    public void getAllData() {
-        System.out.println(serialService.restoreAllData());
+    public void whenRestoreAllDataCheckIfDataPresents() {
+        List<Serial> series = serialService.restoreAllData();
+        assertThat(series, is(not(empty())));
     }
 }

@@ -1,13 +1,14 @@
 package com.tvsc.service.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.stefanbirkner.fishbowl.Fishbowl;
+import com.tvsc.core.exception.ExceptionUtil;
 import com.tvsc.core.model.BannerInfo;
 import com.tvsc.core.model.Episode;
 import com.tvsc.core.model.Season;
 import com.tvsc.core.model.Serial;
 import com.tvsc.persistence.repository.SerialRepository;
 import com.tvsc.service.Constants;
+import com.tvsc.service.exception.HttpException;
 import com.tvsc.service.utils.JsonUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -39,27 +40,27 @@ public class SerialService {
     private UserService userService;
 
     public Serial getSerialInfo(Long id) {
-        HttpGet request = new HttpGet(Constants.SERIES + id);
-        String response = Fishbowl.wrapCheckedException(() -> IOUtils.toString(httpClient.execute(request).getEntity().getContent(), "utf-8"));
-        Serial serial = Fishbowl.wrapCheckedException(() -> (Serial) objectMapper.reader().forType(Serial.class).withRootName(Constants.ROOT).readValue(response));
+        final HttpGet request = new HttpGet(Constants.SERIES + id);
+        final HttpResponse response = ExceptionUtil.wrapCheckedException(() -> httpClient.execute(request), new HttpException(request));
+        Serial serial = ExceptionUtil.wrapCheckedException(() -> (Serial) objectMapper.reader().forType(Serial.class).withRootName(Constants.ROOT).readValue(response.getEntity().getContent()), new HttpException(request));
         request.releaseConnection();
         return serial;
     }
 
     public Serial getSerial(Long id) {
         final HttpGet requestSeries = new HttpGet(Constants.SERIES + id);
-        final HttpResponse responseSeries = Fishbowl.wrapCheckedException(() -> httpClient.execute(requestSeries));
-        Serial serial = Fishbowl.wrapCheckedException(() -> (Serial) objectMapper.reader().forType(Serial.class).withRootName(Constants.ROOT).readValue(responseSeries.getEntity().getContent()));
+        final HttpResponse responseSeries = ExceptionUtil.wrapCheckedException(() -> httpClient.execute(requestSeries), new HttpException(requestSeries));
+        Serial serial = ExceptionUtil.wrapCheckedException(() -> (Serial) objectMapper.reader().forType(Serial.class).withRootName(Constants.ROOT).readValue(responseSeries.getEntity().getContent()), new HttpException(requestSeries));
         requestSeries.releaseConnection();
 
         final HttpGet requestBanners = new HttpGet(Constants.SERIES + id + "/images/query?keyType=season");
-        final HttpResponse responseBanners = Fishbowl.wrapCheckedException(() -> httpClient.execute(requestBanners));
-        List<BannerInfo> seasonBanners = Fishbowl.wrapCheckedException(() -> jsonUtils.getListData(IOUtils.toString(responseBanners.getEntity().getContent(), "utf-8"), BannerInfo.class));
+        final HttpResponse responseBanners = ExceptionUtil.wrapCheckedException(() -> httpClient.execute(requestBanners), new HttpException(requestBanners));
+        List<BannerInfo> seasonBanners = ExceptionUtil.wrapCheckedException(() -> jsonUtils.getListData(IOUtils.toString(responseBanners.getEntity().getContent(), "utf-8"), BannerInfo.class), new HttpException(requestBanners));
         requestBanners.releaseConnection();
 
         final HttpGet requestPosters = new HttpGet(Constants.SERIES + id + "/images/query?keyType=poster");
-        final HttpResponse responsePosters = Fishbowl.wrapCheckedException(() ->httpClient.execute(requestPosters));
-        final String poster = Fishbowl.wrapCheckedException(() -> jsonUtils.getListData(IOUtils.toString(responsePosters.getEntity().getContent(), "utf-8"), BannerInfo.class))
+        final HttpResponse responsePosters = ExceptionUtil.wrapCheckedException(() -> httpClient.execute(requestPosters), new HttpException(requestPosters));
+        final String poster = ExceptionUtil.wrapCheckedException(() -> jsonUtils.getListData(IOUtils.toString(responsePosters.getEntity().getContent(), "utf-8"), BannerInfo.class), new HttpException(requestPosters))
                 .stream()
                 .max(BannerInfo::compareTo)
                 .map(BannerInfo::getFileName)

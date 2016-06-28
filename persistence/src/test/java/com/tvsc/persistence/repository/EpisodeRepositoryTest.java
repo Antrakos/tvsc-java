@@ -1,6 +1,7 @@
 package com.tvsc.persistence.repository;
 
 import com.tvsc.core.AppProfiles;
+import com.tvsc.core.exception.ApplicationException;
 import com.tvsc.persistence.config.PersistenceConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class EpisodeRepositoryTest {
     @Autowired
     EpisodeRepository episodeRepository;
+
     private final Long USER_ID = 1L;
     private final List<Long> PRESENT_IDS = Arrays.asList(5378093L, 300428L, 312249L, 405398L, 3039311L);
     private final List<Long> ABSENT_IDS = Arrays.asList(4426795L, 5487129L, 362532L, 427739L);
@@ -54,7 +56,7 @@ public class EpisodeRepositoryTest {
 
     @Test
     public void setUnwatchedYetNotWatchedEpisodeExpectedDuplicatedKey() {
-        RuntimeException exception = Assertions.expectThrows(RuntimeException.class, () -> episodeRepository.setUnwatched(USER_ID, 78901L, ABSENT_IDS));
+        RuntimeException exception = Assertions.expectThrows(ApplicationException.class, () -> episodeRepository.setUnwatched(USER_ID, 78901L, ABSENT_IDS));
         assertThat(exception.getCause(), is(instanceOf(BatchUpdateException.class)));
     }
 }

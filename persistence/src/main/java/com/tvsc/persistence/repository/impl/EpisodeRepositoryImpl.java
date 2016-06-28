@@ -1,5 +1,6 @@
 package com.tvsc.persistence.repository.impl;
 
+import com.tvsc.persistence.exception.PersistenceException;
 import com.tvsc.persistence.repository.EpisodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,6 +38,6 @@ public class EpisodeRepositoryImpl implements EpisodeRepository {
         int[] result = jdbcTemplate.batchUpdate(episodes.stream().map(id -> String.format("DELETE FROM users_episodes_mapping  WHERE user_id=%d AND episode_id=%d AND serial_id=%d", userId, id, serialId)).toArray(String[]::new));
         OptionalInt fail = Arrays.stream(result).filter(res -> res == 0).findAny();
         if (fail.isPresent())
-            throw new RuntimeException(new BatchUpdateException(result));
+            throw new PersistenceException("Failed to execute update", new BatchUpdateException(result));
     }
 }

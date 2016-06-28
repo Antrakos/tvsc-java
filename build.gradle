@@ -10,7 +10,6 @@ def jackson_version = '2.7.5'
 def http_client_version = '4.5.2'
 def apache_commons_io_version = '2.5'
 def kotlin_version = '1.0.2-1'
-def fishbowl_version = '1.4.0'
 def slf4j_version = '1.7.21'
 def log4j2_version = '2.6'
 def slf4j_log4j2_binding_version = '2.6'
@@ -45,7 +44,6 @@ ext {
     http_client = "org.apache.httpcomponents:httpclient:$http_client_version"
     apache_commons_io = "commons-io:commons-io:$apache_commons_io_version"
     kotlin = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    fishbowl = "com.github.stefanbirkner:fishbowl:$fishbowl_version";
     slf4j = "org.slf4j:slf4j-api:$slf4j_version"
     log4j2 = "org.apache.logging.log4j:log4j-core:$log4j2_version"
     log4j_jul = "org.apache.logging.log4j:log4j-jul:$log4j2_version"

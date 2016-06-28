@@ -13,6 +13,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+
 /**
  * @author Taras Zubrei
  */
@@ -25,8 +31,14 @@ public class EpisodeServiceTest {
     private EpisodeService episodeService;
 
     @Test
-    public void getEpisode() {
-        System.out.println(episodeService.getEpisode(5L));
-        episodeService.getEpisodesOfSerial(78901L).stream().map(Episode::getId).forEach(System.out::println);
+    public void whenGetTheEpisodesCheckIfItIsNotNull() {
+        Episode episode = episodeService.getEpisode(5L);
+        assertThat(episode, is(notNullValue()));
+    }
+
+    @Test
+    public void whenGetAllEpisodesOfTheSerialCheckIfCollectionIsNotEmpty() {
+        List<Episode> episodesOfSerial = episodeService.getEpisodesOfSerial(78901L);
+        assertThat(episodesOfSerial, is(not(empty())));
     }
 }

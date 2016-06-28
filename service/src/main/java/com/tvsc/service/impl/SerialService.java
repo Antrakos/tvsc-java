@@ -1,4 +1,4 @@
-package com.tvsc.service.services;
+package com.tvsc.service.impl;
 
 import com.tvsc.core.model.BannerInfo;
 import com.tvsc.core.model.Episode;

@@ -1,9 +1,8 @@
-package com.tvsc.service.test;
+package com.tvsc.service.impl;
 
 import com.tvsc.core.AppProfiles;
 import com.tvsc.core.model.Serial;
 import com.tvsc.service.config.ServiceConfig;
-import com.tvsc.service.services.SerialService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.runner.JUnitPlatform;

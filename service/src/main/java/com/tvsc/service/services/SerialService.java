@@ -43,14 +43,16 @@ public class SerialService {
                 .stream()
                 .max(BannerInfo::compareTo)
                 .map(BannerInfo::getFileName)
-                .get(); //TODO: null safety
+                .orElse(null);
         serial.setPoster(poster);
 
         final Map<Integer, String> banners = seasonBanners.stream()
                 .collect(Collectors.groupingBy(BannerInfo::getKey))
                 .values()
                 .stream()
-                .map(list -> list.stream().max(BannerInfo::compareTo).get()) //TODO: null safety
+                .map(list -> list.stream().max(BannerInfo::compareTo).orElse(null))
+                .filter(bannerInfo -> bannerInfo != null)
+                .filter(bannerInfo -> bannerInfo.getKey() != null)
                 .collect(Collectors.toMap(banner -> Integer.valueOf(banner.getKey()), BannerInfo::getFileName));
         final List<Season> seasons = episodeService
                 .getEpisodesOfSerial(id)

@@ -7,13 +7,13 @@ import com.fasterxml.jackson.annotation.JsonProperty
  * @author Taras Zubrei
  */
 data class BannerInfo(
-        @JsonProperty("keyType") var type: String? = null,
+        @JsonProperty("keyType") var type: String,
         @JsonProperty("subKey") var key: String? = null,
-        @JsonProperty var fileName: String? = null,
-        @JsonProperty var ratingsInfo: RatingsInfo? = null
+        @JsonProperty var fileName: String,
+        @JsonProperty var ratingsInfo: RatingsInfo
 ) : Comparable<BannerInfo> {
     override fun compareTo(other: BannerInfo): Int {
-        return this.ratingsInfo?.average!!.compareTo(other.ratingsInfo!!.average);
+        return this.ratingsInfo.average.compareTo(other.ratingsInfo.average);
     }
 
     data class RatingsInfo(

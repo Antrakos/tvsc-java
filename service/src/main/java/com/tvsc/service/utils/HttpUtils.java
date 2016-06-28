@@ -1,7 +1,6 @@
 package com.tvsc.service.utils;
 
 import com.tvsc.service.exception.HttpException;
-import org.apache.commons.io.IOUtils;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -27,7 +26,6 @@ public class HttpUtils {
         try (CloseableHttpResponse response = (CloseableHttpResponse) httpClient.execute(request)) {
             return EntityUtils.toString(response.getEntity());
         } catch (IOException e) {
-            e.printStackTrace();
             throw new HttpException(request.getURI().getPath());
         }
     }

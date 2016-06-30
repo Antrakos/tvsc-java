@@ -29,7 +29,7 @@ public class SerialService {
     @Autowired
     private UserService userService;
     @Autowired
-    HttpUtils httpUtils;
+    private HttpUtils httpUtils;
 
     public Serial getSerialInfo(Long id) {
         return jsonUtils.getSingleObject(httpUtils.get(Constants.SERIES + id), Serial.class);

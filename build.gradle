@@ -18,6 +18,7 @@ def junit_jupiter_version = '5.0.0-SNAPSHOT'
 def junit_platform_version = '1.0.0-SNAPSHOT'
 def hamcrest_version = '1.3'
 def mockito_version = '2.0.2-beta'
+def modelmapper_version = '0.7.6'
 
 buildscript {
     repositories {
@@ -56,11 +57,13 @@ ext {
     spring_test_junit5 = files('libs/spring-test-junit5-1.0.0-SNAPSHOT.jar')
     hamcrest = "org.hamcrest:hamcrest-all:$hamcrest_version"
     mockito = "org.mockito:mockito-all:$mockito_version"
+    modelmapper = "org.modelmapper:modelmapper:$modelmapper_version"
 
 }
 subprojects {
     apply plugin: 'java'
     apply plugin: 'org.junit.platform.gradle.plugin'
+    apply plugin: 'kotlin'
     sourceCompatibility = sourceComp
 
     repositories {
@@ -68,6 +71,7 @@ subprojects {
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
     dependencies {
+        compile kotlin
         compile slf4j, log4j2, slf4j_log4j2_binding, jcl_over_slf4j
         testCompile spring_test, hamcrest, mockito, hsqldb, junit_jupiter_api, junit_jupiter_engine, junit_platform_runner, spring_test_junit5, log4j_jul
     }

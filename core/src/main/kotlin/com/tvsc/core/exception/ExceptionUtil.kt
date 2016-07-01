@@ -10,9 +10,10 @@ object ExceptionUtil {
 
     private val LOGGER = LoggerFactory.getLogger(ExceptionUtil::class.java)
 
-    fun <T> wrapCheckedException(exception: ApplicationException, statement: StatementWithReturnValue<T>): T {
+    @JvmStatic
+    fun <T> wrapCheckedException(exception: ApplicationException, statement: () -> T): T {
         try {
-            return statement.evaluate()
+            return statement.invoke()
         } catch (e: RuntimeException) {
             throw e
         } catch (e: Throwable) {

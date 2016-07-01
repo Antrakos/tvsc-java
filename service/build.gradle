@@ -8,4 +8,5 @@ dependencies {
     compile jackson_databind
     compile jackson_datatype_jsr310
     compile jackson_kotlin_module
+    compile modelmapper
 }

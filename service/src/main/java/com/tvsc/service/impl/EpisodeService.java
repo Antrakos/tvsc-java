@@ -16,16 +16,20 @@ import java.util.List;
  */
 @Service
 public class EpisodeService {
-    @Autowired
     private EpisodeRepository episodeRepository;
-    @Autowired
     private UserService userService;
-    @Autowired
     private HttpUtils httpUtils;
-    @Autowired
     private JsonUtils jsonUtils;
-    @Autowired
     private PaginationUtils paginationUtils;
+
+    @Autowired
+    public EpisodeService(EpisodeRepository episodeRepository, UserService userService, HttpUtils httpUtils, JsonUtils jsonUtils, PaginationUtils paginationUtils) {
+        this.episodeRepository = episodeRepository;
+        this.userService = userService;
+        this.httpUtils = httpUtils;
+        this.jsonUtils = jsonUtils;
+        this.paginationUtils = paginationUtils;
+    }
 
     public Episode getEpisode(Long id) {
         return jsonUtils.getSingleObject(httpUtils.get(Constants.EPISODES + id), Episode.class);

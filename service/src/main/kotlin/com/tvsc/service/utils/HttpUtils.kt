@@ -14,14 +14,12 @@ import java.io.IOException
  * @author Taras Zubrei
  */
 @Component
-open class HttpUtils {
-    @Autowired
-    private val httpClient: HttpClient? = null
+open class HttpUtils @Autowired constructor(val httpClient: HttpClient) {
 
-    operator fun get(url: String): String {
+    fun get(url: String): String {
         val request = HttpGet(url)
         try {
-            (httpClient!!.execute(request) as CloseableHttpResponse).use {
+            (httpClient.execute(request) as CloseableHttpResponse).use {
                 response ->
                 return EntityUtils.toString(response.entity)
             }

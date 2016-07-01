@@ -1,4 +1,4 @@
-rootProject.name = 'TV Series Compaion'
+rootProject.name = 'TV Series Companion'
 
 include 'core'
 include 'persistence'

@@ -1,24 +1,4 @@
 group 'TV Series Compaion'
-def sourceVersion = '1.0-SNAPSHOT'
-def sourceComp = 1.8
-def spring_version = '4.2.5.RELEASE'
-def postgres_version = '9.4.1208.jre7'
-def hsqldb_version = '2.3.4'
-//def apache_commons_lang_version = '3.4'
-//def apache_commons_collections_version = '4.1'
-def jackson_version = '2.7.5'
-def http_client_version = '4.5.2'
-def apache_commons_io_version = '2.5'
-def kotlin_version = '1.0.2-1'
-def slf4j_version = '1.7.21'
-def log4j2_version = '2.6'
-def slf4j_log4j2_binding_version = '2.6'
-def jcl_over_slf4j_version = '1.7.21'
-def junit_jupiter_version = '5.0.0-SNAPSHOT'
-def junit_platform_version = '1.0.0-SNAPSHOT'
-def hamcrest_version = '1.3'
-def mockito_version = '2.0.2-beta'
-def modelmapper_version = '0.7.6'
 
 buildscript {
     repositories {
@@ -58,12 +38,18 @@ ext {
     hamcrest = "org.hamcrest:hamcrest-all:$hamcrest_version"
     mockito = "org.mockito:mockito-all:$mockito_version"
     modelmapper = "org.modelmapper:modelmapper:$modelmapper_version"
+    groovy = "org.codehaus.groovy:groovy-all:$groovy_version"
+    spock = "org.spockframework:spock-core:$spock_version"
+    spock_spring = "org.spockframework:spock-spring:$spock_version"
+    cglib = "cglib:cglib-nodep:$cglib_version"
+    objenesis = "org.objenesis:objenesis:$objenesis_version"
 
 }
 subprojects {
     apply plugin: 'java'
     apply plugin: 'org.junit.platform.gradle.plugin'
     apply plugin: 'kotlin'
+    apply plugin: 'groovy'
     sourceCompatibility = sourceComp
 
     repositories {
@@ -71,9 +57,10 @@ subprojects {
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
     dependencies {
-        compile kotlin
-        compile slf4j, log4j2, slf4j_log4j2_binding, jcl_over_slf4j
         testCompile spring_test, hamcrest, mockito, hsqldb, junit_jupiter_api, junit_jupiter_engine, junit_platform_runner, spring_test_junit5, log4j_jul
+        //Spock
+        testCompile groovy, spock, spock_spring
+        testRuntime cglib, objenesis
     }
     configurations.compile.exclude group: "commons-logging"
     junitPlatform {

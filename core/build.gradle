@@ -1,4 +1,6 @@
 group 'core'
 dependencies {
+    compile kotlin
+    compile slf4j, log4j2, slf4j_log4j2_binding, jcl_over_slf4j
     compile jackson_annotations
 }

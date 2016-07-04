@@ -40,7 +40,7 @@ public class EpisodeService {
     }
 
     public List<Long> getWatchedEpisodes(Long serialId) {
-        return episodeRepository.getEpisodes(serialId, userService.getCurrentUser().getId());
+        return episodeRepository.getEpisodes(userService.getCurrentUser().getId(), serialId);
     }
 
     public void setWatchedEpisodes(Long serialId, List<Long> episodes) {

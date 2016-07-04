@@ -4,4 +4,5 @@ dependencies {
     compile spring_context
     compile spring_orm
     compile postgres
+    compile groovy
 }

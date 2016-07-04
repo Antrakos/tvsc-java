@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
-import com.tvsc.persistence.config.PersistenceConfig;
+import com.tvsc.core.exception.ExceptionUtil;
 import com.tvsc.service.Constants;
+import com.tvsc.service.exception.HttpException;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -18,15 +21,22 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HttpContext;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClientConfig;
+import org.asynchttpclient.RequestBuilder;
+import org.asynchttpclient.filter.FilterContext;
+import org.asynchttpclient.filter.FilterException;
+import org.asynchttpclient.filter.RequestFilter;
+import org.asynchttpclient.filter.ResponseFilter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MatchingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ImportResource;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -37,30 +47,88 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
  * @author Taras Zubrei
  */
 @Configuration
-@Import(PersistenceConfig.class)
+@ImportResource("classpath*:PersistenceConfig.groovy")
 @ComponentScan("com.tvsc.service")
 public class ServiceConfig {
     private Logger LOGGER = LoggerFactory.getLogger(ServiceConfig.class);
+    private String token;
 
-    @Bean
-    public HttpClient httpClient() throws IOException {
-        CloseableHttpClient client = HttpClientBuilder.create().build();
+    private String getToken() throws IOException {
+        if (token != null)
+            return token;
         HttpPost authorizationRequest = new HttpPost(Constants.API + "login");
         authorizationRequest.setEntity(new StringEntity("{\"apikey\":\"" + Constants.API_KEY + "\"}", ContentType.APPLICATION_JSON));
-        CloseableHttpResponse authorizationResponse = client.execute(authorizationRequest);
-        authorizationRequest.releaseConnection();
-        String token = new ObjectMapper().readTree(authorizationResponse.getEntity().getContent()).get("token").asText();
-        authorizationResponse.close();
-        client.close();
+        try (CloseableHttpClient client = HttpClientBuilder.create().build();
+             CloseableHttpResponse authorizationResponse = client.execute(authorizationRequest)) {
+            authorizationRequest.releaseConnection();
+            token = new ObjectMapper().readTree(authorizationResponse.getEntity().getContent()).get("token").asText();
+            LOGGER.debug("token=" + token);
+            return token;
+        }
+    }
 
-        LOGGER.debug("token=" + token);
+    @Bean(destroyMethod = "close")
+    public CloseableHttpClient httpClient() throws IOException {
         return HttpClientBuilder
                 .create()
                 .setServiceUnavailableRetryStrategy(new RefreshTokenRetryStrategy())
                 .setDefaultHeaders(Arrays.asList(
-                        new BasicHeader("Authorization", String.format("Bearer %s", token)),
+                        new BasicHeader("Authorization", String.format("Bearer %s", getToken())),
                         new BasicHeader("Accept-Language", "en"))) //TODO: change language
                 .build();
+    }
+
+    @Bean
+    public OkHttpClient okHttpClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(chain -> chain.proceed(chain.request().newBuilder()
+                        .addHeader("Authorization", String.format("Bearer %s", getToken()))
+                        .addHeader("Accept-Language", "en") //TODO: change language
+                        .build()))
+                .addInterceptor(chain -> {
+                    Request request = chain.request();
+                    // try the request
+                    Response response = chain.proceed(request);
+                    int tryCount = 0;
+                    while (!response.isSuccessful() && tryCount < 5) {
+                        new OkHttpClient.Builder().build().newCall(new Request.Builder().url(Constants.API + "refresh_token").build()).execute();
+                        LOGGER.debug("Token refreshed");
+                        tryCount++;
+                        // retry the request
+                        response = chain.proceed(request);
+                    }
+                    // otherwise just pass the original response on
+                    return response;
+                })
+                .build();
+    }
+
+    @Bean(destroyMethod = "close")
+    public AsyncHttpClient asyncHttpClient() {
+        DefaultAsyncHttpClientConfig clientConfig = new DefaultAsyncHttpClientConfig.Builder()
+                .addRequestFilter(new RequestFilter() {
+                    @Override
+                    public <T> FilterContext<T> filter(FilterContext<T> ctx) throws FilterException {
+                        ExceptionUtil.wrapCheckedException(new HttpException("Cannot add headers"), () -> {
+                            ctx.getRequest().getHeaders()
+                                    .add("Authorization", String.format("Bearer %s", getToken()))
+                                    .add("Accept-Language", "en"); //TODO: change language
+                            return null;
+                        });
+                        return ctx;
+                    }
+                }).addResponseFilter(new ResponseFilter() {
+                    public <T> FilterContext<T> filter(FilterContext<T> ctx) throws FilterException {
+                        if (ctx.getResponseStatus().getStatusCode() == 503) {
+                            return new FilterContext.FilterContextBuilder<T>(ctx)
+                                    .request(new RequestBuilder("GET").setUrl(Constants.API + "refresh_token").build())
+                                    .build();
+                        }
+                        return ctx;
+                    }
+                })
+                .build();
+        return new DefaultAsyncHttpClient(clientConfig);
     }
 
     @Bean

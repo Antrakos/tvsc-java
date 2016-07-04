@@ -8,12 +8,14 @@ import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.util.EntityUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 
 /**
  * @author Taras Zubrei
  */
 @Component
+@Primary
 open class HttpUtilsImpl @Autowired constructor(val httpClient: CloseableHttpClient) : HttpUtils {
 
     override fun get(url: String): String {

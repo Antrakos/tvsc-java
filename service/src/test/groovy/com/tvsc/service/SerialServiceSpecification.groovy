@@ -6,6 +6,7 @@ import com.tvsc.service.config.ServiceConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+import spock.lang.Ignore
 import spock.lang.Specification
 
 /**
@@ -14,6 +15,7 @@ import spock.lang.Specification
  */
 @ContextConfiguration(classes = ServiceConfig.class)
 @ActiveProfiles(AppProfiles.TEST)
+@Ignore
 class SerialServiceSpecification extends Specification {
     @Autowired
     private serialService;

@@ -8,6 +8,7 @@ import com.tvsc.service.utils.impl.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+import spock.lang.Ignore
 import spock.lang.Specification
 
 /**
@@ -15,6 +16,7 @@ import spock.lang.Specification
  */
 @ContextConfiguration(classes = ServiceConfig.class)
 @ActiveProfiles(AppProfiles.TEST)
+@Ignore
 class PaginationUtilsComparisonPerformanceTest extends Specification {
     @Autowired
     private PaginationUtilsImpl paginationUtils

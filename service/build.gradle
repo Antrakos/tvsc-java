@@ -1,6 +1,6 @@
 group 'service'
 dependencies {
-    compile project(':core')
+//    compile project(':core')
     compile project(':persistence')
     compile http_client, async_http_client, okhttp3
     compile apache_commons_io

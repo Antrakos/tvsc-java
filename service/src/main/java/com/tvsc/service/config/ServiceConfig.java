@@ -29,8 +29,6 @@ import org.asynchttpclient.filter.FilterContext;
 import org.asynchttpclient.filter.FilterException;
 import org.asynchttpclient.filter.RequestFilter;
 import org.asynchttpclient.filter.ResponseFilter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -73,7 +71,7 @@ public class ServiceConfig {
                 .create()
                 .setServiceUnavailableRetryStrategy(new RefreshTokenRetryStrategy())
                 .setDefaultHeaders(Arrays.asList(
-//                        new BasicHeader("Authorization", String.format("Bearer %s", getToken())),
+                        new BasicHeader("Authorization", String.format("Bearer %s", getToken())),
                         new BasicHeader("Accept-Language", "en"))) //TODO: change language
                 .build();
     }
@@ -82,7 +80,7 @@ public class ServiceConfig {
     public OkHttpClient okHttpClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(chain -> chain.proceed(chain.request().newBuilder()
-//                        .addHeader("Authorization", String.format("Bearer %s", getToken()))
+                        .addHeader("Authorization", String.format("Bearer %s", getToken()))
                         .addHeader("Accept-Language", "en") //TODO: change language
                         .build()))
                 .addInterceptor(chain -> {
@@ -111,7 +109,7 @@ public class ServiceConfig {
                     public <T> FilterContext<T> filter(FilterContext<T> ctx) throws FilterException {
                         ExceptionUtil.wrapCheckedException(new HttpException("Cannot add headers"), () -> {
                             ctx.getRequest().getHeaders()
-//                                    .add("Authorization", String.format("Bearer %s", getToken()))
+                                    .add("Authorization", String.format("Bearer %s", getToken()))
                                     .add("Accept-Language", "en"); //TODO: change language
                             return null;
                         });
@@ -141,12 +139,6 @@ public class ServiceConfig {
         return objectMapper;
     }
 
-    @Bean
-    public ModelMapper modelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        return modelMapper;
-    }
 
     private class RefreshTokenRetryStrategy implements ServiceUnavailableRetryStrategy {
         @Override

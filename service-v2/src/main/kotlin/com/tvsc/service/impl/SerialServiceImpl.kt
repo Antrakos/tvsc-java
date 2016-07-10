@@ -34,10 +34,10 @@ open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
         }
         val seasonBanners = httpUtils.get(Constants.SERIES + "$id/images/query?keyType=season")
                 .thenApply { jsonUtils.getListData(it, BannerInfo::class.java) }
-                .thenApply { it.groupBy { it.key }.values.map { it.max() }.filterNotNull().associateBy({ it.key!!.toInt() }, { it.fileName }) }
+                .thenApply { it.groupBy { it.key }.values.asSequence().map { it.max() }.filterNotNull().associateBy({ it.key!!.toInt() }, { it.fileName }) }
 
         val seasons = episodeService.getEpisodesOfSerial(id)
-                .thenApply { it.groupBy { it.season }.entries.map { Season(number = it.key, episodes = it.value) }.toList() }
+                .thenApply { it.groupBy { it.season }.entries.map { Season(number = it.key, episodes = it.value) } }
                 .thenCombine(seasonBanners) { seasons, banners -> seasons.map { it.banner = banners[it.number]; return@map it } }
 
         return httpUtils.get(Constants.SERIES + id)
@@ -62,7 +62,8 @@ open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
 
     private fun setWatchedEpisodesToSerial(watchedEpisodes: List<Long>, serial: Serial): Serial {
         serial.seasons!!
-                .flatMap { it.episodes!! }
+                .asSequence()
+                .flatMap { it.episodes!!.asSequence() }
                 .filter { watchedEpisodes.contains(it.id) }
                 .forEach { it.watched = true }
         return serial

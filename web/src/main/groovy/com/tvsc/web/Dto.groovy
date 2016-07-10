@@ -47,3 +47,11 @@ class SerialDto {
     String zap2itId
     List<SeasonDto> seasons
 }
+
+@Canonical
+class Error {
+    int status
+    String title
+    String message
+    Throwable exception
+}

@@ -1,10 +1,12 @@
 package com.tvsc.web.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.transform.CompileStatic
 import org.springframework.core.io.ClassPathResource
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
-import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler
+import org.springframework.restdocs.operation.preprocess.ContentModifyingOperationPreprocessor
+import org.springframework.restdocs.operation.preprocess.OperationPreprocessor
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.request.ParameterDescriptor
 import org.springframework.test.web.servlet.MockMvc
@@ -12,9 +14,12 @@ import org.springframework.test.web.servlet.ResultMatcher
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.util.ReflectionUtils
 
+import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.util.stream.Collectors
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import static org.springframework.restdocs.payload.PayloadDocumentation.*
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters
 
@@ -38,27 +43,42 @@ class Request {
         this.expectations = expectations
     }
 
-    def perform(MockMvc mockMvc, RestDocumentationResultHandler document) {
+    def getUrl() {
+        def url = method.class.getDeclaredField('url')
+        url.accessible = true
+        (ReflectionUtils.getField(url, method) as URI).path;
+    }
+
+    def perform(MockMvc mockMvc, ObjectMapper objectMapper) {
         def actions = mockMvc.perform(method);
-        if (pathParameters.length > 0)
-            document.snippets(pathParameters(pathParameters));
-        if (responseFields.length > 0)
-            document.snippets(responseFields(responseFields));
-        if (requestFields.length > 0)
-            document.snippets(requestFields(requestFields));
         expectations.each { actions.andExpect(it) }
-        actions.andDo(document)
+        actions.andDo(document('',
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(limit(3, objectMapper), prettyPrint()),
+                pathParameters(pathParameters),
+                responseFields(responseFields),
+                requestFields(requestFields)))
         actions.andReturn()
+    }
+
+    private static OperationPreprocessor limit(int limit, ObjectMapper objectMapper) {
+        return new ContentModifyingOperationPreprocessor({ byte[] originalContent, contentType ->
+            if (originalContent.length > 0 && "[" == new String(originalContent, 0, 1)) {
+                objectMapper.writeValueAsBytes(objectMapper.readValue(originalContent, List.class)
+                        .stream().limit(limit).collect(Collectors.toList()));
+            } else
+                originalContent;
+        });
     }
 
     @CompileStatic
     static class Builder {
-        private Properties properties = new Properties()
-        private MockHttpServletRequestBuilder requestBuilder
+        private final Properties properties = new Properties()
+        private final MockHttpServletRequestBuilder requestBuilder
         private ParameterDescriptor[] pathParameters
         private FieldDescriptor[] requestFields
         private FieldDescriptor[] responseFields
-        private List<ResultMatcher> expectations = []
+        private final List<ResultMatcher> expectations = []
 
         Builder(RequestMethod method, String url, Object... pathValues) {
             properties.load(new ClassPathResource('web-test.properties').inputStream)
@@ -69,7 +89,7 @@ class Request {
         }
 
         def addHeader(String key, String value) {
-            requestBuilder = requestBuilder.header(key, value)
+            requestBuilder.header(key, value)
             this
         }
 
@@ -83,13 +103,13 @@ class Request {
             this
         }
 
-        def withResponseBodyFromDto(Class<?> dto, String... exclusions) {
-            responseFields = getFields(dto, exclusions)
+        def withResponseBodyFromDto(Class<?> dto, Type type, String... exclusions) {
+            responseFields = getFields(dto, type, exclusions)
             this
         }
 
-        def withRequestBodyFromDto(Class<?> dto, String... exclusions) {
-            requestFields = getFields(dto, exclusions)
+        def withRequestBodyFromDto(Class<?> dto, Type type, String... exclusions) {
+            requestFields = getFields(dto, type, exclusions)
             this
         }
 
@@ -108,18 +128,24 @@ class Request {
             new Request(requestBuilder, pathParameters, requestFields, responseFields, expectations)
         }
 
-        private FieldDescriptor[] getFields(Class<?> dto, String... exclusions) {
+        private FieldDescriptor[] getFields(Class<?> dto, Type type, String... exclusions) {
             dto.getDeclaredFields().size() != 0 ? Arrays.stream(dto.getDeclaredFields())
                     .map { it.name }
                     .filter { !it.contains('$') }
                     .filter { it != 'metaclass' }
                     .filter { !exclusions.contains(it) }
                     .map { "${dto.simpleName}.$it" }
-                    .map { fieldWithPath(it).description(properties.getProperty(it)) }
+                    .map { fieldWithPath(type == Type.ARRAY ? "[].$it" : it).description(properties.getProperty(it)) }
                     .collect(Collectors.toList())
                     .toArray(new FieldDescriptor[0]) : new FieldDescriptor[0]
         }
 
+    }
+
+    enum Type {
+        ARRAY,
+        OBJECT;
+        private Type() {}
     }
 
     enum RequestMethod {

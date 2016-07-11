@@ -1,0 +1,9 @@
+group 'TV Series Compaion'
+apply plugin: 'war'
+dependencies {
+    compile project(':service')
+    compile servlet_api
+    compile spring_mvc
+    compile modelmapper
+    testCompile spring_rest_docs
+}

@@ -17,9 +17,7 @@ object ExceptionUtil {
         } catch (e: RuntimeException) {
             throw e
         } catch (e: Throwable) {
-            exception.setCause(e)
-            LOGGER.error(exception.toString())
-            throw exception
+            throw ApplicationException(exception.message, e)
         }
     }
 

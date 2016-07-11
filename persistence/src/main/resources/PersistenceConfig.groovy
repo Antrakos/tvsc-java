@@ -25,11 +25,11 @@ beans {
                 .build();
 
     } else {
-        dataSource(DriverManagerDataSource) { bean ->
-            bean.setUrl(properties.getProperty('db.prod.url'));
-            bean.setUsername(properties.getProperty('db.prod.username'));
-            bean.setPassword(properties.getProperty('db.prod.password'));
-            bean.setDriverClassName(properties.getProperty('db.prod.driver'));
+        dataSource(DriverManagerDataSource) {
+            url = properties.getProperty('db.prod.url')
+            username = properties.getProperty('db.prod.username')
+            password = properties.getProperty('db.prod.password')
+            driverClassName = properties.getProperty('db.prod.driver')
         }
     }
     transactionManager(DataSourceTransactionManager) {

@@ -14,6 +14,8 @@ ext {
     spring_context = "org.springframework:spring-context:$spring_version"
     spring_orm = "org.springframework:spring-orm:$spring_version"
     spring_test = "org.springframework:spring-test:$spring_version"
+    spring_mvc = "org.springframework:spring-webmvc:$spring_version"
+    spring_rest_docs = "org.springframework.restdocs:spring-restdocs-mockmvc:$spring_rest_docs_version"
 //    apache_commons_lang = "org.apache.commons:commons-lang3:$apache_commons_lang_version"
 //    apache_commons_collections4 = "org.apache.commons:commons-collections4:$apache_commons_collections_version"
     jackson_core = "com.fasterxml.jackson.core:jackson-core:$jackson_version"
@@ -45,6 +47,7 @@ ext {
     spock_spring = "org.spockframework:spock-spring:$spock_version"
     cglib = "cglib:cglib-nodep:$cglib_version"
     objenesis = "org.objenesis:objenesis:$objenesis_version"
+    servlet_api = "javax.servlet:javax.servlet-api:$servlet_api_version"
     logging_list = [slf4j, log4j2, slf4j_log4j2_binding, jcl_over_slf4j]
     jackson_list = [jackson_core, jackson_databind, jackson_datatype_jsr310, jackson_kotlin_module]
     junit_list = [junit_jupiter_api, junit_jupiter_engine, junit_platform_runner, spring_test_junit5, log4j_jul]
@@ -58,7 +61,7 @@ subprojects {
 
     repositories {
         mavenCentral()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+//        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
     dependencies {
         testCompile spring_test, hamcrest, mockito, hsqldb//, junit_list

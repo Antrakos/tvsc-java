@@ -35,7 +35,5 @@ open class EpisodeServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
         return CompletableFuture.supplyAsync { episodeRepository.getEpisodes(userService.getCurrentUser().id, serialId) }
     }
 
-    override fun setWatchedEpisodes(serialId: Long, episodes: List<Long>) {
-        CompletableFuture.runAsync { episodeRepository.setWatched(userService.getCurrentUser().id, serialId, episodes) }
-    }
+    override fun setWatchedEpisodes(serialId: Long, episodes: List<Long>) = CompletableFuture.runAsync { episodeRepository.setWatched(userService.getCurrentUser().id, serialId, episodes) }
 }

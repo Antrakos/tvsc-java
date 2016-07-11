@@ -3,6 +3,7 @@ package com.tvsc.service
 import com.tvsc.core.AppProfiles
 import com.tvsc.core.model.Episode
 import com.tvsc.service.config.ServiceConfig
+import com.tvsc.service.impl.EpisodeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -16,7 +17,7 @@ import spock.lang.Specification
 @ActiveProfiles(AppProfiles.TEST)
 class EpisodeServiceSpecification extends Specification {
     @Autowired
-    private episodeService
+    private EpisodeService episodeService
 
 
     def "when get the episodes then check if it is not null"() {

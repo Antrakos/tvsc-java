@@ -3,6 +3,7 @@ package com.tvsc.service
 import com.tvsc.core.AppProfiles
 import com.tvsc.core.model.Serial
 import com.tvsc.service.config.ServiceConfig
+import com.tvsc.service.impl.SerialService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -16,7 +17,7 @@ import spock.lang.Specification
 @ActiveProfiles(AppProfiles.TEST)
 class SerialServiceSpecification extends Specification {
     @Autowired
-    private serialService;
+    private SerialService serialService;
 
     def "when get serial info then check if it contains only general info"() {
         when:

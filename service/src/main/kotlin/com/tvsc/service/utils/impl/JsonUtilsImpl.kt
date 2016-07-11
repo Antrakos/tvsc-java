@@ -26,13 +26,13 @@ open class JsonUtilsImpl @Autowired constructor(val objectMapper: ObjectMapper) 
 
     override fun <T> getListData(json: String, clazz: Class<T>): List<T> {
         return ExceptionUtil.wrapException(JsonException("Cannot read tree")) {
-            objectMapper.reader().forType(TypeFactory.defaultInstance().constructCollectionType(List::class.java, clazz)).readValue(objectMapper.readTree(json).at("/data"))
+            objectMapper.readerFor(TypeFactory.defaultInstance().constructCollectionType(List::class.java, clazz)).readValue(objectMapper.readTree(json).at("/${Constants.ROOT}"))
         }
     }
 
     override fun <T> getSingleObject(json: String, clazz: Class<T>): T {
         return ExceptionUtil.wrapException(JsonException("Cannot read tree")) {
-            objectMapper.reader().forType(clazz).withRootName(Constants.ROOT).readValue(json)
+            objectMapper.readerFor(clazz).readValue(objectMapper.readTree(json).at("/${Constants.ROOT}"))
         }
     }
 }

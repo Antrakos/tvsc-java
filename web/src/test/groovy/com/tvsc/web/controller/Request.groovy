@@ -9,6 +9,7 @@ import org.springframework.restdocs.operation.preprocess.ContentModifyingOperati
 import org.springframework.restdocs.operation.preprocess.OperationPreprocessor
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.request.ParameterDescriptor
+import org.springframework.restdocs.snippet.Snippet
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultMatcher
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
@@ -52,12 +53,17 @@ class Request {
     def perform(MockMvc mockMvc, ObjectMapper objectMapper) {
         def actions = mockMvc.perform(method);
         expectations.each { actions.andExpect(it) }
+        List<Snippet> arr = []
+        if (pathParameters.size() > 0)
+            arr.add(pathParameters(pathParameters))
+        if (responseFields.size() > 0)
+            arr.add(responseFields(responseFields))
+        if (requestFields.size() > 0)
+            arr.add(requestFields(requestFields))
         actions.andDo(document('',
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(limit(3, objectMapper), prettyPrint()),
-                pathParameters(pathParameters),
-                responseFields(responseFields),
-                requestFields(requestFields)))
+                arr.toArray(new Snippet[0])))
         actions.andReturn()
     }
 
@@ -75,9 +81,9 @@ class Request {
     static class Builder {
         private final Properties properties = new Properties()
         private final MockHttpServletRequestBuilder requestBuilder
-        private ParameterDescriptor[] pathParameters
-        private FieldDescriptor[] requestFields
-        private FieldDescriptor[] responseFields
+        private ParameterDescriptor[] pathParameters = []
+        private FieldDescriptor[] requestFields = []
+        private FieldDescriptor[] responseFields = []
         private final List<ResultMatcher> expectations = []
 
         Builder(RequestMethod method, String url, Object... pathValues) {
@@ -132,10 +138,9 @@ class Request {
             dto.getDeclaredFields().size() != 0 ? Arrays.stream(dto.getDeclaredFields())
                     .map { it.name }
                     .filter { !it.contains('$') }
-                    .filter { it != 'metaclass' }
+                    .filter { it != 'metaClass' }
                     .filter { !exclusions.contains(it) }
-                    .map { "${dto.simpleName}.$it" }
-                    .map { fieldWithPath(type == Type.ARRAY ? "[].$it" : it).description(properties.getProperty(it)) }
+                    .map { fieldWithPath((type == Type.ARRAY ? "[].$it" : it) as String).description(properties.getProperty("${dto.simpleName}.$it")) }
                     .collect(Collectors.toList())
                     .toArray(new FieldDescriptor[0]) : new FieldDescriptor[0]
         }

@@ -1,48 +1,61 @@
 package com.tvsc.web.controller
 
-import com.tvsc.core.model.Serial
-import com.tvsc.web.EpisodeDto
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.type.TypeFactory
+import com.tvsc.core.AppProfiles
+import com.tvsc.service.utils.JsonUtils
 import com.tvsc.web.Routes
+import com.tvsc.web.SerialDto
+import groovy.util.logging.Slf4j
+import org.junit.Rule
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.restdocs.JUnitRestDocumentation
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.web.WebAppConfiguration
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 /**
  *
  * @author Taras Zubrei
  */
-//@ContextConfiguration('classpath*:WebMvcConfig.groovy')
-//@ActiveProfiles(AppProfiles.TEST)
-//@WebAppConfiguration
-//@Slf4j
+@ContextConfiguration('classpath*:WebMvcConfig.groovy')
+@ActiveProfiles(AppProfiles.TEST)
+@WebAppConfiguration
+@Slf4j
 class DocsGenerationTest extends Specification {
-//    @Rule
-//    def restDocumentation = new JUnitRestDocumentation("build/generated-snippets")
-//    @Autowired
-//    private WebApplicationContext context
-//    @Autowired
-//    private ObjectMapper objectMapper
-//    @Autowired
-//    private JsonUtils jsonUtils
-//
-//    def setup() {
-//        Request.metaClass.perform = {
-//            delegate.perform(MockMvcBuilders.webAppContextSetup(this.context)
-//                    .apply(documentationConfiguration(this.restDocumentation))
-//                    .build(), objectMapper)
-//        }
-//    }
+    @Rule
+    JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build/generated-snippets")
+    @Autowired
+    private WebApplicationContext context
+    @Autowired
+    private ObjectMapper objectMapper
+    @Autowired
+    private JsonUtils jsonUtils
+
+    def setup() {
+        Request.metaClass.perform = {
+            delegate.perform(MockMvcBuilders.webAppContextSetup(this.context)
+                    .apply(documentationConfiguration(this.restDocumentation))
+                    .build(), objectMapper)
+        }
+    }
 
     def "get all series"() {
-        when:
+        given:
         Request request = new Request.Builder(Request.RequestMethod.GET, Routes.SERIES)
-                .withResponseBodyFromDto(Serial, Request.Type.ARRAY)
+                .withResponseBodyFromDto(SerialDto, Request.Type.ARRAY)
                 .andExpect(status().isOk())
                 .build()
         when:
-        def response = jsonUtils.getListData(request.perform().response.contentAsString, EpisodeDto)
+        def response = request.perform().response.contentAsString
         then:
-        response.size() > 0
+        !response.contains('"null"')
     }
 
 }

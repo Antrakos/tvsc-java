@@ -22,12 +22,12 @@ class ExceptionHandlingAdvice {
     @Autowired
     ResourceBundleMessageSource messageSource
 
-    @ExceptionHandler([HttpException, JsonException])
+    @ExceptionHandler(ApplicationException)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public <T extends ApplicationException> Error handleHttpException(T ex, HttpServletRequest request) {
+    public Error handleHttpException(ApplicationException ex, HttpServletRequest request) {
         new Error(status: HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                title: messageSource.getMessage("errors.${ex.class.simpleName}.title", null, request.getLocale()),
-                message: messageSource.getMessage("errors.${ex.class.simpleName}.message", null, request.getLocale()), //TODO: Maybe? LocaleContextHolder.getLocale()
-                exception: ex)
+                title: messageSource.getMessage("errors.${ex.cause.class.simpleName}.title", null, request.getLocale()),
+                message: messageSource.getMessage("errors.${ex.cause.class.simpleName}.message", null, request.getLocale()), //TODO: Maybe? LocaleContextHolder.getLocale()
+                exception: ex.cause)
     }
 }

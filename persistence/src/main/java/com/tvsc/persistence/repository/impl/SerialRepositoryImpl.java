@@ -25,6 +25,11 @@ public class SerialRepositoryImpl implements SerialRepository {
     }
 
     @Override
+    public Long count(Long userId) {
+        return jdbcTemplate.queryForObject("SELECT count(1) FROM users_series_mapping WHERE user_id=?", new Object[]{userId}, Long.class);
+    }
+
+    @Override
     public void add(Long userId, Long serialId) {
         jdbcTemplate.update("INSERT INTO users_series_mapping VALUES (?, ?)", userId, serialId);
     }

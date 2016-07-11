@@ -69,6 +69,8 @@ open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
         return serial
     }
 
+    override fun count(): Long = serialRepository.count(userService.getCurrentUser().id)
+
     override fun addSerial(id: Long) = serialRepository.add(userService.getCurrentUser().id, id)
 
     override fun deleteSerial(id: Long) = serialRepository.delete(userService.getCurrentUser().id, id)

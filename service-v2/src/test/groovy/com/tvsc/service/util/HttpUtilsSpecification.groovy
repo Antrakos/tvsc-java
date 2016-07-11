@@ -2,6 +2,7 @@ package com.tvsc.service.util
 
 import com.tvsc.core.AppProfiles
 import com.tvsc.service.Constants
+import com.tvsc.service.config.ServiceConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -11,7 +12,7 @@ import spock.lang.Specification
  *
  * @author Taras Zubrei
  */
-@ContextConfiguration('classpath*:ServiceConfig.groovy')
+@ContextConfiguration(classes = ServiceConfig)
 @ActiveProfiles(AppProfiles.TEST)
 class HttpUtilsSpecification extends Specification {
     @Autowired

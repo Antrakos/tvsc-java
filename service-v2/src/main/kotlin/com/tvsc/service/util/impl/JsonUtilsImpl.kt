@@ -15,11 +15,6 @@ import org.springframework.stereotype.Component
 @Component
 open class JsonUtilsImpl @Autowired constructor(val objectMapper: ObjectMapper) : JsonUtils {
 
-    override fun getNext(json: String): Int? {
-        val asText = ExceptionUtil.wrapException(JsonException("Cannot read tree")) { objectMapper.readTree(json) }.at("/links/next").asText()
-        return if (asText == "null") null else asText.toInt()
-    }
-
     override fun getCount(json: String): Int = ExceptionUtil.wrapException(JsonException("Cannot read tree")) { objectMapper.readTree(json) }.at("/links/last").asInt()
 
     override fun <T> getListData(json: String, clazz: Class<T>): List<T> = ExceptionUtil.wrapException(JsonException("Cannot read tree")) {

@@ -19,7 +19,6 @@ import java.util.concurrent.CompletableFuture
  */
 @ContextConfiguration(classes = ServiceConfig)
 @ActiveProfiles(AppProfiles.TEST)
-@Slf4j
 @Transactional
 class SerialServiceSpecification extends Specification {
     @Autowired
@@ -45,7 +44,7 @@ class SerialServiceSpecification extends Specification {
         !serial.seasons.empty
     }
 
-    def "given future of serial list when get the info then assure that all series has seasons and therefore episodes"() {
+    def "given future of serial list when get the list then assure that all series has seasons and therefore episodes"() {
         given:
         CompletableFuture<List<Serial>> completableFuture = serialService.restoreAllData()
         when:

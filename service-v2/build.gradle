@@ -1,6 +1,11 @@
 group 'service-v2'
+apply plugin: 'me.champeau.gradle.jmh'
 dependencies {
     compile project(':persistence')
     compile okhttp3
     compile jackson_list
+}
+jmh {
+    jmhVersion = '1.12'
+    duplicateClassesStrategy = 'EXCLUDE'
 }

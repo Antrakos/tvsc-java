@@ -1,6 +1,6 @@
 package com.tvsc.web.controller
 
-import com.tvsc.service.impl.EpisodeService
+import com.tvsc.service.EpisodeService
 import com.tvsc.web.EpisodeDto
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,6 +23,6 @@ class EpisodeController {
 
     @RequestMapping(path = '/{id}', method = RequestMethod.GET)
     def findOne(@PathVariable Long id) {
-        episodeService.getEpisode(id).collect { modelMapper.map(it, EpisodeDto) }
+        episodeService.getEpisode(id).thenApply { modelMapper.map(it, EpisodeDto) }
     }
 }

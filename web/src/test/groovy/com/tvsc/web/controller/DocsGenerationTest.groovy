@@ -1,9 +1,8 @@
 package com.tvsc.web.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.type.TypeFactory
 import com.tvsc.core.AppProfiles
-import com.tvsc.service.utils.JsonUtils
+import com.tvsc.service.util.JsonUtils
 import com.tvsc.web.Routes
 import com.tvsc.web.SerialDto
 import groovy.util.logging.Slf4j

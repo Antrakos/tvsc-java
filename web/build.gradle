@@ -1,7 +1,7 @@
 group 'TV Series Compaion'
 apply plugin: 'war'
 dependencies {
-    compile project(':service')
+    compile project(':service-v2')
     compile servlet_api
     compile spring_mvc
     compile modelmapper

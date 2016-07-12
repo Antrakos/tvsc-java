@@ -1,7 +1,7 @@
 package com.tvsc.web.controller
 
-import com.tvsc.service.impl.EpisodeService
-import com.tvsc.service.impl.SerialService
+import com.tvsc.service.EpisodeService
+import com.tvsc.service.SerialService
 import com.tvsc.web.EpisodeDto
 import com.tvsc.web.SerialDto
 import org.modelmapper.ModelMapper
@@ -24,27 +24,27 @@ class SerialController {
 
     @RequestMapping(path = '/{id}', method = RequestMethod.GET)
     def findOne(@PathVariable Long id) {
-        serialService.getSerial(id).collect { modelMapper.map(it, SerialDto) }
+        serialService.getSerial(id).thenApply { modelMapper.map(it, SerialDto) }
     }
 
     @RequestMapping(path = '/{id}/info', method = RequestMethod.GET)
     def findInfo(@PathVariable Long id) {
-        serialService.getSerialInfo(id).collect { modelMapper.map(it, SerialDto) }
+        serialService.getSerialInfo(id).thenApply { modelMapper.map(it, SerialDto) }
     }
 
     @RequestMapping(path = '/{id}/episodes', method = RequestMethod.GET)
     def findEpisodesOfSerial(@PathVariable Long id) {
-        episodeService.getEpisodesOfSerial(id).collect { modelMapper.map(it, EpisodeDto) }
+        episodeService.getEpisodesOfSerial(id).thenApply { it.collect { modelMapper.map(it, EpisodeDto) } }
     }
 
     @RequestMapping(path = '/{id}/episodes/watched', method = RequestMethod.GET)
     def findWatchedEpisodesOfSerial(@PathVariable Long id) {
-        episodeService.getWatchedEpisodes(id).collect { new EpisodeDto(id: it) }
+        episodeService.getWatchedEpisodes(id).thenApply { it.collect { new EpisodeDto(id: it) } }
     }
 
     @RequestMapping(method = RequestMethod.GET)
     def findAll() {
-        serialService.restoreAllData().collect { modelMapper.map(it, SerialDto) }
+        serialService.restoreAllData().thenApply { it.collect { modelMapper.map(it, SerialDto) } }
     }
 
     @RequestMapping(path = '/{id}', method = RequestMethod.POST)

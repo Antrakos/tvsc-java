@@ -3,7 +3,18 @@ apply plugin: 'me.champeau.gradle.jmh'
 dependencies {
     compile project(':persistence')
     compile okhttp3
-    compile jackson_list
+    compile(jackson_databind) {
+        exclude module: 'jackson-annotations'
+    }
+    compile(jackson_datatype_jsr310) {
+        exclude module: 'jackson-databind'
+        exclude module: 'jackson-annotations'
+    }
+    compile(jackson_kotlin_module) {
+        exclude module: 'jackson-databind'
+        exclude module: 'jackson-annotations'
+        exclude module: 'kotlin-stdlib'
+    }
 }
 jmh {
     jmhVersion = '1.12'

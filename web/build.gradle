@@ -3,7 +3,16 @@ apply plugin: 'war'
 dependencies {
     compile project(':service-v2')
     compile servlet_api
-    compile spring_mvc
+    compile(spring_mvc) {
+        exclude module: 'spring-aop'
+        exclude module: 'spring-beans'
+        exclude module: 'spring-context'
+        exclude module: 'spring-expression'
+    }
     compile modelmapper
-    testCompile spring_rest_docs
+    testCompile(spring_rest_docs) {
+        exclude module: 'jackson-databind'
+        exclude module: 'spring-test'
+        exclude module: 'spring-webmvc'
+    }
 }

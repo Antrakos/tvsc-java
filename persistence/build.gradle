@@ -2,7 +2,9 @@ group 'persistence'
 dependencies {
     compile project(':core')
     compile spring_context
-    compile spring_orm
+    compile(spring_orm) {
+        exclude module: 'spring-beans'
+    }
     compile postgres
     compile groovy
 }

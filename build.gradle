@@ -67,7 +67,14 @@ subprojects {
     }
     dependencies {
         testCompile spring_test, hamcrest, mockito, hsqldb//, junit_list
-        testCompile groovy, spock, spock_spring
+        testCompile groovy
+        testCompile(spock) {
+            exclude group: 'org.codehaus.groovy'
+        }
+        testCompile(spock_spring) {
+            exclude group: 'org.spockframework'
+            exclude group: 'org.codehaus.groovy'
+        }
         testRuntime cglib, objenesis
     }
     configurations.compile.exclude group: "commons-logging"

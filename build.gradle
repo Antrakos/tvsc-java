@@ -20,6 +20,7 @@ ext {
     spring_rest_docs = "org.springframework.restdocs:spring-restdocs-mockmvc:$spring_rest_docs_version"
 //    apache_commons_lang = "org.apache.commons:commons-lang3:$apache_commons_lang_version"
 //    apache_commons_collections4 = "org.apache.commons:commons-collections4:$apache_commons_collections_version"
+    guava = "com.google.guava:guava:$guava_version"
     jackson_core = "com.fasterxml.jackson.core:jackson-core:$jackson_version"
     jackson_annotations = "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
     jackson_databind = "com.fasterxml.jackson.core:jackson-databind:$jackson_version"

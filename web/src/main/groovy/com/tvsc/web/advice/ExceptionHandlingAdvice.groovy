@@ -1,8 +1,6 @@
 package com.tvsc.web.advice
 
 import com.tvsc.core.exception.ApplicationException
-import com.tvsc.service.exception.HttpException
-import com.tvsc.service.exception.JsonException
 import com.tvsc.web.Error
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.support.ResourceBundleMessageSource

@@ -1,6 +1,5 @@
 package com.tvsc.service.util.impl
 
-import com.tvsc.core.exception.ExceptionUtil
 import com.tvsc.service.exception.HttpException
 import com.tvsc.service.exception.NotFoundException
 import com.tvsc.service.util.HttpUtils
@@ -21,7 +20,7 @@ open class HttpUtilsImpl @Autowired constructor(val okHttpClient: OkHttpClient) 
         okHttpClient.newCall(Request.Builder().url(url).build()).enqueue(object : Callback {
             override fun onFailure(call: Call?, e: IOException?) {
                 if (e != null)
-                    ExceptionUtil.wrapException(HttpException(url)) { throw e }
+                    HttpException(url).wrap { throw e }
             }
 
             override fun onResponse(call: Call?, response: Response?) {

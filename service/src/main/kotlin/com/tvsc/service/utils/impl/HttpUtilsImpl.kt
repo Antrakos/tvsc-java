@@ -20,10 +20,10 @@ open class HttpUtilsImpl @Autowired constructor(val httpClient: CloseableHttpCli
 
     override fun get(url: String): String {
         val request = HttpGet(url)
-        return ExceptionUtil.wrapException(HttpException(request.uri.path)) {
+        return HttpException(request.uri.path).wrap {
             (httpClient.execute(request) as CloseableHttpResponse).use {
                 response ->
-                return@wrapException EntityUtils.toString(response.entity)
+                return@wrap EntityUtils.toString(response.entity)
             }
         }
 

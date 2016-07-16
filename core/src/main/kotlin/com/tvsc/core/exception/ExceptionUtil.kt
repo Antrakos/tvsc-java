@@ -1,26 +1,22 @@
 package com.tvsc.core.exception
 
 
-import org.slf4j.LoggerFactory
+import java.util.concurrent.Callable
 
 /**
  * @author Taras Zubrei
  */
 object ExceptionUtil {
 
-    private val LOGGER = LoggerFactory.getLogger(ExceptionUtil::class.java)
-
     @JvmStatic
-    fun <T> wrapException(exception: ApplicationException, statement: () -> T): T {
+    fun <T, K> wrapCheckedException(exception: K, statement: Callable<T>): T where K : ApplicationException {
         try {
-            return statement.invoke()
+            return statement.call()
         } catch (e: RuntimeException) {
             throw e
         } catch (e: Throwable) {
-            throw ApplicationException(exception.message, e)
+            val constructor = exception.javaClass.getConstructor(String::class.java, Throwable::class.java)
+            throw constructor.newInstance(exception.message, e)
         }
     }
-
-    @JvmStatic
-    fun <T> wrapCheckedException(exception: ApplicationException, statement: StatementWithReturnValue<T>): T = wrapException(exception) { statement.evaluate() }
 }

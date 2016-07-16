@@ -15,4 +15,5 @@ dependencies {
         exclude module: 'spring-test'
         exclude module: 'spring-webmvc'
     }
+    compile guava
 }

@@ -21,7 +21,7 @@ class ExceptionUtilSpecification extends Specification {
 
     def "when wrap checked exception then throws wrapped exception with it as cause"() {
         when:
-        ExceptionUtil.wrapCheckedException(exception) {
+        exception.wrap {
             throw checkedExceptionToWrap
         }
         then:
@@ -31,7 +31,7 @@ class ExceptionUtilSpecification extends Specification {
 
     def "when wrap unchecked exception then throws it and wrapping exception is ignored"() {
         when:
-        ExceptionUtil.wrapCheckedException(exception) {
+        exception.wrap {
             throw uncheckedExceptionToWrap
         }
         then:

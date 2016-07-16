@@ -1,6 +1,5 @@
 package com.tvsc.service.utils.impl
 
-import com.tvsc.core.exception.ExceptionUtil
 import com.tvsc.service.exception.HttpException
 import com.tvsc.service.utils.HttpUtils
 import org.apache.http.client.methods.CloseableHttpResponse

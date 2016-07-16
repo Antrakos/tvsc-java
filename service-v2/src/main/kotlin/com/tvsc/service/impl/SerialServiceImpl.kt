@@ -37,7 +37,7 @@ open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
                 .thenApply { it.groupBy { it.key }.values.asSequence().map { it.max() }.filterNotNull().associateBy({ it.key!!.toInt() }, { it.fileName }) }
 
         val seasons = episodeService.getEpisodesOfSerial(id)
-                .thenApply { it.groupBy { it.season }.entries.map { Season(number = it.key, episodes = it.value) } }
+                .thenApply { it.groupBy { it.season }.entries.map { Season(it.key, null, it.value) } }
                 .thenCombine(seasonBanners) { seasons, banners -> seasons.map { it.banner = banners[it.number]; return@map it } }
 
         return httpUtils.get(Constants.SERIES + id)

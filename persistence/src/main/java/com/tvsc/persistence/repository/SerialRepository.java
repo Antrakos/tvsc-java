@@ -1,9 +1,6 @@
 package com.tvsc.persistence.repository;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Taras Zubrei

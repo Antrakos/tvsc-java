@@ -9,6 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
     public User getCurrentUser() {
-        return new User(1, "Jack"); //TODO: Security
+        return new User(1L, "Jack"); //TODO: Security
     }
 }

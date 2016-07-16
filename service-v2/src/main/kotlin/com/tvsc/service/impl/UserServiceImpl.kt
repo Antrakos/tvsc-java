@@ -10,5 +10,5 @@ import org.springframework.stereotype.Component
  */
 @Component
 open class UserServiceImpl : UserService {
-    override fun getCurrentUser(): User = User(id = 1, name = "Jack") //TODO: Security
+    override fun getCurrentUser(): User = User(1, "Jack") //TODO: Security
 }

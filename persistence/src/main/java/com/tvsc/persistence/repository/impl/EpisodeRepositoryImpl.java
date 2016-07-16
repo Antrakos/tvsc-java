@@ -2,6 +2,7 @@ package com.tvsc.persistence.repository.impl;
 
 import com.tvsc.persistence.exception.PersistenceException;
 import com.tvsc.persistence.repository.EpisodeRepository;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -35,7 +36,7 @@ public class EpisodeRepositoryImpl implements EpisodeRepository {
 
     @Override
     public void setUnwatched(Long userId, Long serialId, List<Long> episodes) {
-        int[] result = jdbcTemplate.batchUpdate(episodes.stream().map(id -> String.format("DELETE FROM users_episodes_mapping  WHERE user_id=%d AND episode_id=%d AND serial_id=%d", userId, id, serialId)).toArray(String[]::new));
+        val result = jdbcTemplate.batchUpdate(episodes.stream().map(id -> String.format("DELETE FROM users_episodes_mapping  WHERE user_id=%d AND episode_id=%d AND serial_id=%d", userId, id, serialId)).toArray(String[]::new));
         OptionalInt fail = Arrays.stream(result).filter(res -> res == 0).findAny();
         if (fail.isPresent())
             throw new PersistenceException("Failed to execute update", new BatchUpdateException(result));

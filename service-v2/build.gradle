@@ -2,6 +2,7 @@ group 'service-v2'
 apply plugin: 'me.champeau.gradle.jmh'
 dependencies {
     compile project(':persistence')
+    compile kotlin
     compile okhttp3
     compile(jackson_databind) {
         exclude module: 'jackson-annotations'

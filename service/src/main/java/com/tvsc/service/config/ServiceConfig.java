@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
-import com.tvsc.core.exception.ExceptionUtil;
 import com.tvsc.service.Constants;
 import com.tvsc.service.exception.HttpException;
 import okhttp3.OkHttpClient;
@@ -108,7 +107,7 @@ public class ServiceConfig {
                 .addRequestFilter(new RequestFilter() {
                     @Override
                     public <T> FilterContext<T> filter(FilterContext<T> ctx) throws FilterException {
-                        ExceptionUtil.wrapCheckedException(new HttpException("Cannot add headers"), () -> {
+                        new HttpException("Cannot add headers").wrap(() -> {
                             ctx.getRequest().getHeaders()
                                     .add("Authorization", String.format("Bearer %s", getToken()))
                                     .add("Accept-Language", "en"); //TODO: change language

@@ -1,5 +1,8 @@
 package com.tvsc.core.exception;
 
+import lombok.SneakyThrows;
+
+import java.lang.reflect.Constructor;
 import java.util.concurrent.Callable;
 
 /**
@@ -15,7 +18,15 @@ public class ApplicationException extends RuntimeException {
         super(message, cause);
     }
 
+    @SneakyThrows
     public <T> T wrap(Callable<T> statement) {
-        return ExceptionUtil.wrapCheckedException(this, statement);
+        try {
+            return statement.call();
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Throwable e) {
+            Constructor<? extends ApplicationException> constructor = this.getClass().getConstructor(String.class, Throwable.class);
+            throw constructor.newInstance(this.getMessage(), e);
+        }
     }
 }

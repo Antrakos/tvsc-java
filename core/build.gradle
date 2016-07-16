@@ -1,6 +1,6 @@
 group 'core'
 dependencies {
-    compile kotlin
     compile logging_list
     compile jackson_annotations
+    compile project_lombok
 }

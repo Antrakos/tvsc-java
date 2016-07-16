@@ -1,6 +1,7 @@
 group 'service'
 dependencies {
     compile project(':persistence')
+    compile kotlin
     compile http_client, async_http_client, okhttp3
     compile apache_commons_io
     compile jackson_list

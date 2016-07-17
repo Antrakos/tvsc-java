@@ -1,7 +1,7 @@
 group 'TV Series Compaion'
 apply plugin: 'war'
 dependencies {
-    compile project(':service-v2')
+    compile project(':service')
     compile servlet_api
     compile(spring_mvc) {
         exclude module: 'spring-aop'

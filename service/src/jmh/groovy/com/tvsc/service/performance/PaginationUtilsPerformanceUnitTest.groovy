@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.tvsc.core.model.Episode
 import com.tvsc.service.Constants
+import com.tvsc.service.config.ServiceConfig
 import com.tvsc.service.util.HttpUtils
 import com.tvsc.service.util.JsonUtils
 import com.tvsc.service.util.impl.JsonUtilsImpl
@@ -22,6 +23,7 @@ import org.openjdk.jmh.annotations.Setup
 import org.openjdk.jmh.annotations.State
 import org.openjdk.jmh.annotations.Warmup
 import org.openjdk.jmh.infra.Blackhole
+import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
@@ -46,10 +48,8 @@ class PaginationUtilsPerformanceUnitTest {
 
     @Setup
     void setup() {
-        jsonUtils = new JsonUtilsImpl(new ObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .registerModule(new JavaTimeModule())
-                .registerModule(new KotlinModule()))
+        def context = new AnnotationConfigApplicationContext(ServiceConfig);
+        jsonUtils = context.getBean(JsonUtils)
         httpUtils = new HttpUtils() {
             @Override
             CompletableFuture<String> get(@NotNull String url) {

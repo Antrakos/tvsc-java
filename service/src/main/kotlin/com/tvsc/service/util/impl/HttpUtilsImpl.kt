@@ -19,6 +19,7 @@ open class HttpUtilsImpl @Autowired constructor(val okHttpClient: OkHttpClient) 
         val result = CompletableFuture<String>();
         okHttpClient.newCall(Request.Builder().url(url).build()).enqueue(object : Callback {
             override fun onFailure(call: Call?, e: IOException?) {
+                call?.cancel()
                 if (e != null)
                     HttpException(url).wrap { throw e }
             }

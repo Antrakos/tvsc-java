@@ -3,6 +3,8 @@ package com.tvsc.core.exception;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
 /**
@@ -18,15 +20,18 @@ public class ApplicationException extends RuntimeException {
         super(message, cause);
     }
 
-    @SneakyThrows
     public <T> T wrap(Callable<T> statement) {
         try {
             return statement.call();
         } catch (RuntimeException e) {
             throw e;
         } catch (Throwable e) {
-            Constructor<? extends ApplicationException> constructor = this.getClass().getConstructor(String.class, Throwable.class);
-            throw constructor.newInstance(this.getMessage(), e);
+            try {
+                this.getClass().getMethod("initCause", Throwable.class).invoke(this, e);
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
+                throw new RuntimeException("Failed to set cause to Exception instance", ex);
+            }
+            throw this;
         }
     }
 }

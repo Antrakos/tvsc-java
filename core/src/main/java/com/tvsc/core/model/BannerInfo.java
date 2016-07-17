@@ -21,11 +21,13 @@ public class BannerInfo implements Comparable<BannerInfo>{
     private RatingsInfo ratingsInfo;
 
     @Override
-    public int compareTo(@NonNull BannerInfo o) {
+    public int compareTo(BannerInfo o) {
         return this.ratingsInfo.average.compareTo(o.ratingsInfo.average);
     }
 
-    class RatingsInfo {
+    @Data
+    @NoArgsConstructor
+    private class RatingsInfo {
         @JsonProperty
         private Double average;
         @JsonProperty

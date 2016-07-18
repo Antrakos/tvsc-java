@@ -40,6 +40,9 @@ open class ServiceConfig {
             .registerModule(JavaTimeModule())
             .registerModule(KotlinModule())
 
+    @Bean
+    open fun commonLoggingBeanPostProcessor() = CommonLoggingBeanPostProcessor()
+
     private val retryRequest: (Interceptor.Chain) -> Response = {
         chain ->
         val request = chain.request()

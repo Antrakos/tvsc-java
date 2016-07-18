@@ -5,6 +5,7 @@ import com.tvsc.core.AppProfiles
 import com.tvsc.service.util.JsonUtils
 import com.tvsc.web.Routes
 import com.tvsc.web.SerialDto
+import com.tvsc.web.config.WebMvcConfig
 import groovy.util.logging.Slf4j
 import org.junit.Rule
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Taras Zubrei
  */
-@ContextConfiguration('classpath*:WebMvcConfig.groovy')
+@ContextConfiguration(classes = WebMvcConfig)
 @ActiveProfiles(AppProfiles.TEST)
 @WebAppConfiguration
 @Slf4j

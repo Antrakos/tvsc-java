@@ -1,12 +1,12 @@
 package com.tvsc.web.config;
 
 import com.tvsc.core.AppProfiles;
-import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 /**
  * @author Taras Zubrei
  */
-public class WebInit implements WebApplicationInitializer {
+public class WebInit extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     public void onStartup(ServletContext container) throws ServletException {
@@ -25,8 +25,8 @@ public class WebInit implements WebApplicationInitializer {
 
         ServletRegistration.Dynamic dispatcher = container.addServlet("spring-mvc-dispatcher", new DispatcherServlet(servletContext));
         dispatcher.setLoadOnStartup(1);
+        dispatcher.setAsyncSupported(true);
         dispatcher.addMapping("/");
-        dispatcher.setInitParameter("contextConfigLocation", "classpath*:WebMvcConfig.groovy");
 
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
@@ -36,5 +36,22 @@ public class WebInit implements WebApplicationInitializer {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         container.addFilter("corsFilter", new CorsFilter(source)).addMappingForUrlPatterns(null, false, "/*");
+
+        super.onStartup(container);
+    }
+
+    @Override
+    protected String[] getServletMappings() {
+        return new String[]{"/"};
+    }
+
+    @Override
+    protected Class<?>[] getRootConfigClasses() {
+        return new Class<?>[]{WebMvcConfig.class};
+    }
+
+    @Override
+    protected Class<?>[] getServletConfigClasses() {
+        return new Class<?>[0];
     }
 }

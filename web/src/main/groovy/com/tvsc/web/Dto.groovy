@@ -1,6 +1,7 @@
 package com.tvsc.web
 
 import groovy.transform.Canonical
+import org.springframework.web.bind.annotation.ResponseBody
 
 import java.time.LocalDate
 
@@ -53,5 +54,5 @@ class Error {
     int status
     String title
     String message
-    Throwable exception
+    String exception
 }

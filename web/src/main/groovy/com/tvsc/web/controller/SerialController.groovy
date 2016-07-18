@@ -3,7 +3,6 @@ package com.tvsc.web.controller
 import com.tvsc.service.EpisodeService
 import com.tvsc.service.SerialService
 import com.tvsc.web.EpisodeDto
-import com.tvsc.web.SerialDto
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -24,17 +23,17 @@ class SerialController {
 
     @RequestMapping(path = '/{id}', method = RequestMethod.GET)
     def findOne(@PathVariable Long id) {
-        serialService.getSerial(id).thenApply { modelMapper.map(it, SerialDto) }
+        serialService.getSerial(id).thenApply { it.convert() }
     }
 
     @RequestMapping(path = '/{id}/info', method = RequestMethod.GET)
     def findInfo(@PathVariable Long id) {
-        serialService.getSerialInfo(id).thenApply { modelMapper.map(it, SerialDto) }
+        serialService.getSerialInfo(id).thenApply { it.convert() }
     }
 
     @RequestMapping(path = '/{id}/episodes', method = RequestMethod.GET)
     def findEpisodesOfSerial(@PathVariable Long id) {
-        episodeService.getEpisodesOfSerial(id).thenApply { it.collect { modelMapper.map(it, EpisodeDto) } }
+        episodeService.getEpisodesOfSerial(id).thenApply { it.collect { it.convert() } }
     }
 
     @RequestMapping(path = '/{id}/episodes/watched', method = RequestMethod.GET)
@@ -44,7 +43,7 @@ class SerialController {
 
     @RequestMapping(method = RequestMethod.GET)
     def findAll() {
-        serialService.restoreAllData().thenApply { it.collect { modelMapper.map(it, SerialDto) } }
+        serialService.restoreAllData().thenApply { it.collect { it.convert() } }
     }
 
     @RequestMapping(path = '/{id}', method = RequestMethod.POST)

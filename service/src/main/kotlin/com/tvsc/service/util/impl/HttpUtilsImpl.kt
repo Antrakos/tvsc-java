@@ -21,7 +21,7 @@ open class HttpUtilsImpl @Autowired constructor(val okHttpClient: OkHttpClient) 
             override fun onFailure(call: Call?, e: IOException?) {
                 call?.cancel()
                 if (e != null)
-                    HttpException(url).wrap { throw e }
+                    result.completeExceptionally(HttpException(url, e))
             }
 
             override fun onResponse(call: Call?, response: Response?) {

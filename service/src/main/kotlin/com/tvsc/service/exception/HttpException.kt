@@ -8,4 +8,5 @@ import com.tvsc.core.exception.ApplicationException
  */
 class HttpException : ApplicationException {
     constructor(url: String) : super("Cannot execute request: $url")
+    constructor(url:String, cause: Throwable) : super("Cannot execute request: $url", cause)
 }

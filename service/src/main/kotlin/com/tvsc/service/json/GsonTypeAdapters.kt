@@ -3,6 +3,9 @@ package com.tvsc.service.json
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
+import com.google.gson.TypeAdapter
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import com.tvsc.core.model.BannerInfo
 import com.tvsc.core.model.Episode
 import com.tvsc.core.model.Serial
@@ -69,9 +72,39 @@ class SerialDeserializer : JsonDeserializer<Serial> {
 }
 
 class LocalDateDeserializer : JsonDeserializer<LocalDate> {
-    override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext?): LocalDate? {
-        val firstAired = json.asString
-        return if (firstAired != null) LocalDate.parse(firstAired) else null
+    override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext?): LocalDate? = deserializeLocalDate(json.asString)
+}
+
+fun deserializeLocalDate(string: String?): LocalDate? = if (string != null) LocalDate.parse(string) else null
+
+fun <T> serialize(out: JsonWriter, value: T) where T : Any {
+    out.beginObject()
+    value.javaClass.declaredFields.forEach {
+        out.name(it.name).value(it.get(value).toString())
+    }
+    out.endObject()
+}
+
+class EpisodeTypeAdapter : TypeAdapter<Episode>() {
+    override fun read(`in`: JsonReader): Episode {
+        val reader = `in`
+        val episode = Episode()
+        reader.beginObject()
+        while (reader.hasNext())
+            when (reader.nextName()) {
+                "filename" -> episode.image = reader.nextString()
+                "firstAired" -> deserializeLocalDate(reader.nextString())
+                "id" -> episode.id = reader.nextLong()
+                "imdbId" -> episode.imdbId = reader.nextString()
+                "airedSeason" -> episode.season = reader.nextInt()
+                "siteRating" -> episode.rating = reader.nextDouble()
+                "overview" -> episode.overview = reader.nextString()
+                "airedEpisodeNumber" -> episode.number = reader.nextInt()
+                "episodeName" -> episode.name = reader.nextString()
+            }
+        reader.endObject()
+        return episode
     }
 
+    override fun write(out: JsonWriter, value: Episode) = serialize(out, value)
 }

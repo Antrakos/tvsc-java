@@ -4,8 +4,16 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.tvsc.core.model.BannerInfo
+import com.tvsc.core.model.Episode
+import com.tvsc.core.model.Serial
 import com.tvsc.service.Constants
+import com.tvsc.service.json.BannerInfoDeserializer
+import com.tvsc.service.json.EpisodeDeserializer
+import com.tvsc.service.json.LocalDateDeserializer
+import com.tvsc.service.json.SerialDeserializer
 import okhttp3.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -13,6 +21,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.ImportResource
+import java.time.LocalDate
 
 /**
  *
@@ -36,7 +45,14 @@ open class ServiceConfig {
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .registerModule(JavaTimeModule())
-            .registerModule(KotlinModule())
+
+    @Bean
+    open fun gson(): Gson = GsonBuilder()
+            .registerTypeAdapter(Episode::class.java, EpisodeDeserializer())
+            .registerTypeAdapter(BannerInfo::class.java, BannerInfoDeserializer())
+            .registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer())
+            .registerTypeAdapter(Serial::class.java, SerialDeserializer())
+            .create()
 
     @Bean
     open fun commonLoggingBeanPostProcessor() = CommonLoggingBeanPostProcessor()

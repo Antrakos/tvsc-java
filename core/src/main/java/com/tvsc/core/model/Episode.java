@@ -28,7 +28,7 @@ public class Episode {
     private String imdbId;
     @JsonProperty("airedSeason")
     private Integer season;
-    private Boolean watched;
+    private Boolean watched = false;
     @JsonProperty("filename")
     private String image;
 }

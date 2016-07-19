@@ -6,12 +6,14 @@ import com.tvsc.service.Constants
 import com.tvsc.service.exception.JsonException
 import com.tvsc.service.util.JsonUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 
 /**
  * @author Taras Zubrei
  */
 @Component
+@Primary
 open class JsonUtilsImpl @Autowired constructor(val objectMapper: ObjectMapper) : JsonUtils {
 
     override fun getCount(json: String): Int = JsonException("Cannot read tree").wrap { objectMapper.readTree(json) }.at("/links/last").asInt()

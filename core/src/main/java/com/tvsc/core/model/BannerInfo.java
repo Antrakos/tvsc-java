@@ -27,7 +27,7 @@ public class BannerInfo implements Comparable<BannerInfo>{
 
     @Data
     @NoArgsConstructor
-    private class RatingsInfo {
+    public static class RatingsInfo {
         @JsonProperty
         private Double average;
         @JsonProperty

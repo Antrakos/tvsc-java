@@ -1,9 +1,5 @@
 package com.tvsc.service.performance
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.tvsc.core.model.Episode
 import com.tvsc.service.Constants
 import com.tvsc.service.config.ServiceConfig
@@ -12,18 +8,8 @@ import com.tvsc.service.util.JsonUtils
 import com.tvsc.service.util.impl.JsonUtilsImpl
 import com.tvsc.service.util.impl.PaginationUtilsImpl
 import org.jetbrains.annotations.NotNull
-import org.openjdk.jmh.annotations.Benchmark
-import org.openjdk.jmh.annotations.BenchmarkMode
-import org.openjdk.jmh.annotations.Fork
-import org.openjdk.jmh.annotations.Measurement
-import org.openjdk.jmh.annotations.Mode
-import org.openjdk.jmh.annotations.OutputTimeUnit
-import org.openjdk.jmh.annotations.Scope
-import org.openjdk.jmh.annotations.Setup
-import org.openjdk.jmh.annotations.State
-import org.openjdk.jmh.annotations.Warmup
+import org.openjdk.jmh.annotations.*
 import org.openjdk.jmh.infra.Blackhole
-import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
@@ -48,8 +34,8 @@ class PaginationUtilsPerformanceUnitTest {
 
     @Setup
     void setup() {
-        def context = new AnnotationConfigApplicationContext(ServiceConfig);
-        jsonUtils = context.getBean(JsonUtils)
+        ServiceConfig config = new ServiceConfig()
+        jsonUtils = new JsonUtilsImpl(config.objectMapper())
         httpUtils = new HttpUtils() {
             @Override
             CompletableFuture<String> get(@NotNull String url) {

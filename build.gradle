@@ -21,7 +21,7 @@ ext {
 //    apache_commons_lang = "org.apache.commons:commons-lang3:$apache_commons_lang_version"
 //    apache_commons_collections4 = "org.apache.commons:commons-collections4:$apache_commons_collections_version"
     guava = "com.google.guava:guava:$guava_version"
-    project_lombok="org.projectlombok:lombok:$project_lombok_version"
+    project_lombok = "org.projectlombok:lombok:$project_lombok_version"
     jackson_core = "com.fasterxml.jackson.core:jackson-core:$jackson_version"
     jackson_annotations = "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
     jackson_databind = "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
@@ -52,6 +52,11 @@ ext {
     cglib = "cglib:cglib-nodep:$cglib_version"
     objenesis = "org.objenesis:objenesis:$objenesis_version"
     servlet_api = "javax.servlet:javax.servlet-api:$servlet_api_version"
+    spring_boot_starter_log4j2 = "org.springframework.boot:spring-boot-starter-log4j2:$spring_boot_version"
+    spring_boot_starter_web = "org.springframework.boot:spring-boot-starter-web:$spring_boot_version"
+    spring_boot_starter_actuator = "org.springframework.boot:spring-boot-starter-actuator:$spring_boot_version"
+    spring_boot_starter_hateoas = "org.springframework.boot:spring-boot-starter-hateoas:$spring_boot_version"
+    spring_boot_starter_jdbc = "org.springframework.boot:spring-boot-starter-jdbc:$spring_boot_version"
     logging_list = [slf4j, log4j2, slf4j_log4j2_binding, jcl_over_slf4j]
     jackson_list = [jackson_core, jackson_databind, jackson_datatype_jsr310]
     junit_list = [junit_jupiter_api, junit_jupiter_engine, junit_platform_runner, spring_test_junit5, log4j_jul]
@@ -79,5 +84,6 @@ subprojects {
         }
         testRuntime cglib, objenesis
     }
-    configurations.compile.exclude group: "commons-logging"
+    configurations.compile.exclude group: 'commons-logging'
+    configurations.compile.exclude module: 'logback-classic'
 }

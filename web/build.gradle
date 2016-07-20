@@ -1,8 +1,6 @@
 group 'TV Series Compaion'
-apply plugin: 'war'
 dependencies {
     compile project(':service')
-    compile servlet_api
     compile(spring_mvc) {
         exclude module: 'spring-aop'
         exclude module: 'spring-beans'
@@ -16,4 +14,19 @@ dependencies {
         exclude module: 'spring-webmvc'
     }
     compile guava
+    compile(spring_boot_starter_actuator) {
+        exclude module: 'spring-web'
+    }
+    compile(spring_boot_starter_web) {
+        exclude module: 'spring-aop'
+        exclude module: 'spring-beans'
+        exclude module: 'spring-context'
+        exclude module: 'spring-expression'
+        exclude module: 'jackson-databind'
+        exclude module: 'spring-test'
+        exclude module: 'spring-web' //delete
+    }
+//    compile("org.springframework.boot:spring-boot-starter-data-rest:$spring_boot_version") {
+//        exclude module: 'guava'
+//    }
 }

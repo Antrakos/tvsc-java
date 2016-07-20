@@ -2,7 +2,6 @@ package com.tvsc.service
 
 import com.tvsc.core.AppProfiles
 import com.tvsc.core.model.Serial
-import com.tvsc.service.config.ServiceConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -16,7 +15,7 @@ import java.util.concurrent.CompletableFuture
  *
  * @author Taras Zubrei
  */
-@ContextConfiguration(classes = ServiceConfig)
+@ContextConfiguration(classes = Service)
 @ActiveProfiles(AppProfiles.TEST)
 @Transactional
 class SerialServiceSpecification extends Specification {

@@ -4,7 +4,6 @@ import com.tvsc.core.AppProfiles
 import com.tvsc.core.model.Episode
 import com.tvsc.core.model.User
 import com.tvsc.persistence.repository.EpisodeRepository
-import com.tvsc.service.config.ServiceConfig
 import com.tvsc.service.impl.EpisodeServiceImpl
 import com.tvsc.service.util.HttpUtils
 import com.tvsc.service.util.JsonUtils
@@ -22,7 +21,7 @@ import java.util.concurrent.CompletableFuture
  *
  * @author Taras Zubrei
  */
-@ContextConfiguration(classes = ServiceConfig)
+@ContextConfiguration(classes = Service)
 @ActiveProfiles(AppProfiles.TEST)
 @Transactional
 class EpisodeServiceSpecification extends Specification {
@@ -53,6 +52,7 @@ class EpisodeServiceSpecification extends Specification {
         def present = episodeService.getWatchedEpisodes(78901L).join().size()
         present - old == ABSENT_IDS.size()
     }
+
     def "given future of episode when get the object then check firstAired date"() {
         given:
         episodeService = new EpisodeServiceImpl(httpUtils, jsonUtils, paginationUtils, episodeRepository, userService)

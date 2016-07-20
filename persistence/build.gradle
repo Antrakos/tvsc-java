@@ -7,4 +7,5 @@ dependencies {
     }
     compile postgres
     compile groovy
+    compile spring_boot_starter_jdbc
 }

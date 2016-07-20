@@ -3,7 +3,7 @@ package com.tvsc.web.controller
 import com.tvsc.service.EpisodeService
 import com.tvsc.service.SerialService
 import com.tvsc.web.EpisodeDto
-import org.modelmapper.ModelMapper
+import com.tvsc.web.Routes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
@@ -12,14 +12,12 @@ import org.springframework.web.bind.annotation.*
  * @author Taras Zubrei
  */
 @RestController
-@RequestMapping('api/v1/series')
+@RequestMapping(Routes.SERIES)
 class SerialController {
     @Autowired
     private SerialService serialService
     @Autowired
     private EpisodeService episodeService
-    @Autowired
-    ModelMapper modelMapper
 
     @RequestMapping(path = '/{id}', method = RequestMethod.GET)
     def findOne(@PathVariable Long id) {

@@ -3,11 +3,12 @@ package com.tvsc.web.advice
 import com.tvsc.core.exception.ApplicationException
 import com.tvsc.web.Error
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.support.ResourceBundleMessageSource
+import org.springframework.context.MessageSource
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.ResponseStatus
 
 import java.util.concurrent.CompletionException
 
@@ -20,16 +21,18 @@ import static org.springframework.context.i18n.LocaleContextHolder.getLocale
 @ControllerAdvice
 class ExceptionHandlingAdvice {
     @Autowired
-    ResourceBundleMessageSource messageSource
+    MessageSource messageSource
     Locale defaultLocale = new Locale("en", "US")
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public Error handleCompletionException(CompletionException ex) {
         handleException(ex.cause)
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public Error handleApplicationException(ApplicationException ex) {
         handleException(ex)

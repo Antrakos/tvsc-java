@@ -1,6 +1,7 @@
 package com.tvsc.persistence.repository
 
 import com.tvsc.core.AppProfiles
+import com.tvsc.persistence.Persistence
 import com.tvsc.persistence.exception.PersistenceException
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,10 +17,10 @@ import java.sql.BatchUpdateException
  *
  * @author Taras Zubrei
  */
-@ContextConfiguration("classpath*:PersistenceConfig.groovy")
-@ActiveProfiles(AppProfiles.TEST)
 @Slf4j
 @Transactional
+@ActiveProfiles(AppProfiles.TEST)
+@ContextConfiguration(classes = Persistence)
 class EpisodeRepositorySpecification extends Specification {
     @Autowired
     private EpisodeRepository episodeRepository

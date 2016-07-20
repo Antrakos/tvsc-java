@@ -1,5 +1,6 @@
 package com.tvsc.service.config
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
@@ -20,7 +21,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.ImportResource
 import java.time.LocalDate
 
 /**
@@ -28,8 +28,6 @@ import java.time.LocalDate
  * @author Taras Zubrei
  */
 @Configuration
-@ImportResource("classpath*:PersistenceConfig.groovy")
-@ComponentScan("com.tvsc.service")
 open class ServiceConfig {
     val LOGGER: Logger = LoggerFactory.getLogger(ServiceConfig::class.java)
     @Bean
@@ -44,6 +42,7 @@ open class ServiceConfig {
     open fun objectMapper(): ObjectMapper = ObjectMapper()
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .registerModule(JavaTimeModule())
 
     @Bean

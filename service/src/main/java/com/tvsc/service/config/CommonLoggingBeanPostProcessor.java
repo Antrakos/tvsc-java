@@ -7,6 +7,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -43,7 +44,10 @@ public class CommonLoggingBeanPostProcessor implements BeanPostProcessor {
             if (result instanceof CompletableFuture) {
                 CompletableFuture<?> future = (CompletableFuture<?>) result;
                 return future.thenApply(res -> {
-                    log.debug(String.format("In CompletableFuture of %s from method %s.%s", res.getClass().getSimpleName(), javaClass.getName(), method.getName()));
+                    log.debug(String.format("In CompletableFuture of %s from method %s.%s",
+                            Optional.ofNullable(res).map(Object::getClass).map(Class::getSimpleName).orElse("null"),
+                            javaClass.getName(),
+                            method.getName()));
                     return res;
                 });
             }

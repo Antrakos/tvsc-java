@@ -3,7 +3,6 @@ package com.tvsc.web.controller
 import com.tvsc.service.EpisodeService
 import com.tvsc.service.SerialService
 import com.tvsc.web.EpisodeDto
-import com.tvsc.web.Routes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.*
  * @author Taras Zubrei
  */
 @RestController
-@RequestMapping(Routes.SERIES)
+@RequestMapping('/api/v1/series')
 class SerialController {
     @Autowired
     private SerialService serialService

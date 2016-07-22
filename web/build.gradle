@@ -8,11 +8,6 @@ dependencies {
         exclude module: 'spring-expression'
     }
     compile modelmapper
-    testCompile(spring_rest_docs) {
-        exclude module: 'jackson-databind'
-        exclude module: 'spring-test'
-        exclude module: 'spring-webmvc'
-    }
     compile guava
     compile(spring_boot_starter_actuator) {
         exclude module: 'spring-web'
@@ -26,7 +21,5 @@ dependencies {
         exclude module: 'spring-test'
         exclude module: 'spring-web' //delete
     }
-//    compile("org.springframework.boot:spring-boot-starter-data-rest:$spring_boot_version") {
-//        exclude module: 'guava'
-//    }
+    compile spring_boot_starter_hateoas
 }

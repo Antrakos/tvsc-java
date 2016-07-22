@@ -13,10 +13,16 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.support.ResourceBundleMessageSource
+import org.springframework.http.HttpStatus
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.stereotype.Component
+import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.context.request.NativeWebRequest
+import org.springframework.web.context.request.async.DeferredResult
+import org.springframework.web.context.request.async.DeferredResultProcessingInterceptorAdapter
 import org.springframework.web.servlet.LocaleResolver
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver
@@ -52,6 +58,23 @@ class Web extends WebMvcConfigurerAdapter {
     void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(new MappingJackson2HttpMessageConverter(objectMapper))
     }
+
+
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        configurer.registerDeferredResultInterceptors(
+                new DeferredResultProcessingInterceptorAdapter() {
+                    @Override
+                    public <T> boolean handleTimeout(NativeWebRequest request, DeferredResult<T> result) {
+                        result.setErrorResult(new ServiceUnavailableException());
+                        return false;
+                    }
+                });
+    }
+
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    static class ServiceUnavailableException extends Exception {}
+
 
     @Component
     class ModelMapperFactoryBean implements FactoryBean<ModelMapper> {

@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan("com.tvsc.persistence")
-@PropertySource("persistence/application.properties")
+@PropertySource("classpath:persistence/application.properties")
 public class Persistence {
     public static void main(String[] args) {
         SpringApplication.run(Persistence.class, args);

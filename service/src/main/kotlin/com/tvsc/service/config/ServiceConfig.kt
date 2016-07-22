@@ -19,9 +19,9 @@ import okhttp3.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import java.time.LocalDate
+import java.util.concurrent.TimeUnit
 
 /**
  *
@@ -36,7 +36,9 @@ open class ServiceConfig {
                 .addHeader("Authorization", "Bearer " + getToken())
                 .addHeader("Accept-Language", "en") //TODO: change language
                 .build())
-    }.addInterceptor(retryRequest).build()
+    }.addInterceptor(retryRequest)
+            .readTimeout(20, TimeUnit.SECONDS)
+            .build()
 
     @Bean
     open fun objectMapper(): ObjectMapper = ObjectMapper()

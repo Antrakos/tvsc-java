@@ -1,5 +1,6 @@
 group 'TV Series Compaion'
 dependencies {
+    apply plugin: 'com.github.lkishalmi.gatling'
     compile project(':service')
     compile(spring_mvc) {
         exclude module: 'spring-aop'
@@ -22,4 +23,5 @@ dependencies {
         exclude module: 'spring-web' //delete
     }
     compile spring_boot_starter_hateoas
+    gatlingCompile project(':web')
 }

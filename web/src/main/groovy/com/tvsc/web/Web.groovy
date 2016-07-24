@@ -1,7 +1,7 @@
 package com.tvsc.web
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.tvsc.service.Service
+import com.tvsc.service.config.ServiceConfig
 import org.modelmapper.ModelMapper
 import org.modelmapper.convention.MatchingStrategies
 import org.springframework.beans.factory.FactoryBean
@@ -34,7 +34,7 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver
 @EnableWebMvc
 @Configuration
 @EnableAutoConfiguration
-@Import(Service.class)
+@Import(ServiceConfig)
 @ComponentScan("com.tvsc.web")
 class Web extends WebMvcConfigurerAdapter {
     public static void main(String[] args) {

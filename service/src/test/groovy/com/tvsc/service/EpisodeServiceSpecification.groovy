@@ -4,13 +4,14 @@ import com.tvsc.core.AppProfiles
 import com.tvsc.core.model.Episode
 import com.tvsc.core.model.User
 import com.tvsc.persistence.repository.EpisodeRepository
+import com.tvsc.service.config.ServiceConfig
 import com.tvsc.service.impl.EpisodeServiceImpl
 import com.tvsc.service.util.HttpUtils
 import com.tvsc.service.util.JsonUtils
 import com.tvsc.service.util.PaginationUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.SpringApplicationConfiguration
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 
@@ -21,7 +22,7 @@ import java.util.concurrent.CompletableFuture
  *
  * @author Taras Zubrei
  */
-@ContextConfiguration(classes = Service)
+@SpringApplicationConfiguration(classes = ServiceConfig)
 @ActiveProfiles(AppProfiles.TEST)
 @Transactional
 class EpisodeServiceSpecification extends Specification {

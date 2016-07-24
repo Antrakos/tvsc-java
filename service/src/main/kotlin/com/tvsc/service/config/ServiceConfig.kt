@@ -10,6 +10,7 @@ import com.google.gson.GsonBuilder
 import com.tvsc.core.model.BannerInfo
 import com.tvsc.core.model.Episode
 import com.tvsc.core.model.Serial
+import com.tvsc.persistence.config.PersistenceConfig
 import com.tvsc.service.Constants
 import com.tvsc.service.json.BannerInfoDeserializer
 import com.tvsc.service.json.EpisodeDeserializer
@@ -18,8 +19,11 @@ import com.tvsc.service.json.SerialDeserializer
 import okhttp3.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
@@ -28,6 +32,9 @@ import java.util.concurrent.TimeUnit
  * @author Taras Zubrei
  */
 @Configuration
+@EnableAutoConfiguration
+@ComponentScan("com.tvsc.service")
+@Import(PersistenceConfig::class)
 open class ServiceConfig {
     val LOGGER: Logger = LoggerFactory.getLogger(ServiceConfig::class.java)
     @Bean

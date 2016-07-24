@@ -1,8 +1,7 @@
-package com.tvsc.persistence;
+package com.tvsc.persistence.config;
 
 import com.tvsc.core.AppProfiles;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -17,10 +16,7 @@ import javax.sql.DataSource;
 @EnableAutoConfiguration
 @ComponentScan("com.tvsc.persistence")
 @PropertySource("classpath:persistence/application.properties")
-public class Persistence {
-    public static void main(String[] args) {
-        SpringApplication.run(Persistence.class, args);
-    }
+public class PersistenceConfig {
 
     @Value("${db.schema}")
     String schema;

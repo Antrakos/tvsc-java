@@ -12,8 +12,9 @@ dependencies {
         exclude module: 'jackson-annotations'
     }
     compile gson
+    jmhCompile project(':service')
 }
-jmh {
+jmh { //TODO: Add logging configuration
     jmhVersion = '1.12'
     duplicateClassesStrategy = 'EXCLUDE'
 }

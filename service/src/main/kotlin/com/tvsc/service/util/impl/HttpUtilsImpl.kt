@@ -1,35 +1,29 @@
 package com.tvsc.service.util.impl
 
-import com.tvsc.service.exception.HttpException
-import com.tvsc.service.exception.NotFoundException
 import com.tvsc.service.util.HttpUtils
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okio.BufferedSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import java.io.IOException
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.Reader
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
+import java.util.function.Supplier
 
 /**
  *
  * @author Taras Zubrei
  */
 @Component
-open class HttpUtilsImpl @Autowired constructor(val okHttpClient: OkHttpClient) : HttpUtils {
-    override fun get(url: String): CompletableFuture<String> {
-        val result = CompletableFuture<String>();
-        okHttpClient.newCall(Request.Builder().url(url).build()).enqueue(object : Callback {
-            override fun onFailure(call: Call?, e: IOException?) {
-                call?.cancel()
-                if (e != null)
-                    result.completeExceptionally(HttpException(url, e))
-            }
-
-            override fun onResponse(call: Call?, response: Response?) {
-                if (response?.code() == 404)
-                    throw NotFoundException(url)
-                result.complete(response?.body()?.string())
-            }
-        })
-        return result
-    }
+open class HttpUtilsImpl @Autowired constructor(val okHttpClient: OkHttpClient, val executor: Executor) : HttpUtils {
+    override fun get(url: String): CompletableFuture<String> = getResponse(url).thenApply { it.string() }
+    override fun getBody(url: String): CompletableFuture<BufferedSource> = getResponse(url).thenApply { it.source() }
+    override fun getInputStream(url: String): CompletableFuture<InputStream> = getResponse(url).thenApply { it.byteStream() }
+    override fun getReader(url: String): CompletableFuture<Reader> = getResponse(url).thenApply { InputStreamReader(it.byteStream()) }
+    private fun getResponse(url: String) = CompletableFuture.supplyAsync(Supplier {
+        okHttpClient.newCall(Request.Builder().url(url).build()).execute().body()
+    }, executor)
 }

@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture
 open class PaginationUtilsImpl @Autowired constructor(val jsonUtils: JsonUtils, val httpUtils: HttpUtils) : PaginationUtils {
     override fun <T> getFullResponse(url: String, clazz: Class<T>): CompletableFuture<List<T>> {
         val urlWithPage = url.plus(if (url.contains('?')) '&' else '?').plus("page=%d")
-        return httpUtils.get(url).thenApply { jsonUtils.getListData(it, clazz).to(jsonUtils.getCount(it)) }
+        return httpUtils.getReader(url).thenApply { jsonUtils.getPage(it, clazz) }
                 .thenApply { pair ->
                     Array<CompletableFuture<List<T>>>(pair.second) {
                         if (it == 0) CompletableFuture.completedFuture(pair.first) else getPage(urlWithPage, it + 1, clazz)
@@ -26,14 +26,14 @@ open class PaginationUtilsImpl @Autowired constructor(val jsonUtils: JsonUtils, 
     }
 
     private fun <T> getPage(url: String, page: Int, clazz: Class<T>): CompletableFuture<List<T>> =
-            httpUtils.get(String.Companion.format(url, page)).thenApply { jsonUtils.getListData(it, clazz) }
+            httpUtils.getReader(String.Companion.format(url, page)).thenApply { jsonUtils.getListData(it, clazz) }
 
     @Deprecated("This method is too slow. Use 'getFullResponse'.", ReplaceWith("getFullResponse(url, clazz)"), DeprecationLevel.WARNING)
     fun <T> getFullResponseOldVersion(url: String, clazz: Class<T>): CompletableFuture<List<T>> =
-            httpUtils.get(url).thenApply {
+            httpUtils.getReader(url).thenApply {
                 response ->
-                val elements: List<T> = jsonUtils.getListData(response, clazz)
-                val count = jsonUtils.getCount(response)
+                var count: Int = 1
+                val elements: List<T> = jsonUtils.getPage(response, clazz).let { count = it.second; it.first }
                 if (count == 1)
                     return@thenApply elements
                 val urlWithPage = url.plus(if (url.contains('?')) '&' else '?').plus("page=%d")

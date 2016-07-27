@@ -13,6 +13,8 @@ import com.tvsc.service.util.JsonUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
+import java.util.function.Supplier
 
 /**
  *
@@ -23,16 +25,17 @@ open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
                                                     val jsonUtils: JsonUtils,
                                                     val serialRepository: SerialRepository,
                                                     val userService: UserService,
-                                                    val episodeService: EpisodeService) : SerialService {
+                                                    val episodeService: EpisodeService,
+                                                    val executor: Executor) : SerialService {
 
-    override fun getSerialInfo(id: Long): CompletableFuture<Serial> = httpUtils.get(Constants.SERIES + id).thenApply { jsonUtils.getSingleObject(it, Serial::class.java) }
+    override fun getSerialInfo(id: Long): CompletableFuture<Serial> = httpUtils.getReader(Constants.SERIES + id).thenApply { jsonUtils.getSingleObject(it, Serial::class.java) }
 
     override fun getSerial(id: Long): CompletableFuture<Serial> {
 
-        val poster = httpUtils.get(Constants.SERIES + "$id/images/query?keyType=poster").thenApply {
+        val poster = httpUtils.getReader(Constants.SERIES + "$id/images/query?keyType=poster").thenApply {
             jsonUtils.getListData(it, BannerInfo::class.java).max()?.fileName
         }
-        val seasonBanners = httpUtils.get(Constants.SERIES + "$id/images/query?keyType=season")
+        val seasonBanners = httpUtils.getReader(Constants.SERIES + "$id/images/query?keyType=season")
                 .thenApply { jsonUtils.getListData(it, BannerInfo::class.java) }
                 .thenApply { it.groupBy { it.key }.values.asSequence().map { it.max() }.filterNotNull().associateBy({ it.key!!.toInt() }, { it.fileName }) }
 
@@ -40,30 +43,30 @@ open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
                 .thenApply { it.groupBy { it.season }.entries.map { Season(it.key, null, it.value) } }
                 .thenCombine(seasonBanners) { seasons, banners -> seasons.map { it.banner = banners[it.number]; return@map it } }
 
-        return httpUtils.get(Constants.SERIES + id)
+        return httpUtils.getReader(Constants.SERIES + id)
                 .thenApply { jsonUtils.getSingleObject(it, Serial::class.java) }
                 .thenCombine(poster) { serial, poster -> serial.poster = poster; return@thenCombine serial }
                 .thenCombine(seasons) { serial, seasons -> serial.seasons = seasons; return@thenCombine serial }
     }
 
-    override fun restoreAllData(): CompletableFuture<List<Serial>> = CompletableFuture.supplyAsync {
+    override fun restoreAllData(): CompletableFuture<List<Serial>> = CompletableFuture.supplyAsync(Supplier {
         serialRepository.getSeries(userService.getCurrentUser().id)
                 .map { this.getSerial(it) }
                 .map {
                     it.thenApply {
                         serial ->
-                        episodeService.getWatchedEpisodes(serial.id!!)
+                        episodeService.getWatchedEpisodes(serial.id)
                                 .thenApply { setWatchedEpisodesToSerial(it, serial) }
                                 .join()
                     }
                 }
                 .map { it.join() }
-    }
+    }, executor)
 
     private fun setWatchedEpisodesToSerial(watchedEpisodes: List<Long>, serial: Serial): Serial {
-        serial.seasons!!
+        serial.seasons
                 .asSequence()
-                .flatMap { it.episodes!!.asSequence() }
+                .flatMap { it.episodes.asSequence() }
                 .filter { watchedEpisodes.contains(it.id) }
                 .forEach { it.watched = true }
         return serial

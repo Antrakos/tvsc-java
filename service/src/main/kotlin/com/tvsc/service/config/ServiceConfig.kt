@@ -25,6 +25,8 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import java.time.LocalDate
+import java.util.concurrent.Executor
+import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.TimeUnit
 
 /**
@@ -65,11 +67,15 @@ open class ServiceConfig {
     @Bean
     open fun commonLoggingBeanPostProcessor() = CommonLoggingBeanPostProcessor()
 
+    @Bean
+    open fun executorService(): Executor = ForkJoinPool.commonPool()
+
     private val retryRequest: (Interceptor.Chain) -> Response = {
         chain ->
         val request = chain.request()
         // try the request
-        var response = chain.proceed(request)
+        val originalResponse = chain.proceed(request)
+        var response = originalResponse
         var tryCount = 0
         while (response.code() == 403 && tryCount < 5) {
             OkHttpClient.Builder().build().newCall(Request.Builder().url("${Constants.API}/refresh_token").build()).execute()
@@ -79,7 +85,7 @@ open class ServiceConfig {
             response = chain.proceed(request)
         }
         // otherwise just pass the original response on
-        response
+        originalResponse
     }
 
     private fun getToken(): String {

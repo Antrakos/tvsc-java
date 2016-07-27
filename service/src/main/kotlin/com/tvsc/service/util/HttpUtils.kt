@@ -1,5 +1,8 @@
 package com.tvsc.service.util
 
+import okio.BufferedSource
+import java.io.InputStream
+import java.io.Reader
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -8,4 +11,7 @@ import java.util.concurrent.CompletableFuture
  */
 interface HttpUtils {
     fun get(url: String): CompletableFuture<String>
+    fun getBody(url: String): CompletableFuture<BufferedSource>
+    fun getInputStream(url: String): CompletableFuture<InputStream>
+    fun getReader(url: String): CompletableFuture<Reader>
 }

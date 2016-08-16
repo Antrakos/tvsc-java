@@ -1,6 +1,5 @@
 package com.tvsc.core.immutable;
 
-import com.tvsc.core.model.Episode;
 import org.immutables.value.Value.Default;
 import org.immutables.value.Value.Immutable;
 

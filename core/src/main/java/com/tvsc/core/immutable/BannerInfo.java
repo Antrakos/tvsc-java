@@ -14,7 +14,7 @@ import static org.immutables.value.Value.Immutable;
 @Immutable
 @JsonSerialize(as = ImmutableBannerInfo.class)
 @JsonDeserialize(as = ImmutableBannerInfo.class)
-public interface BannerInfo extends WithBannerInfo {
+public interface BannerInfo extends WithBannerInfo, Comparable<BannerInfo> {
     @JsonProperty("keyType")
     @Json(name = "keyType")
     String type();
@@ -29,6 +29,10 @@ public interface BannerInfo extends WithBannerInfo {
     String fileName();
 
     RatingsInfo ratingsInfo();
+
+    default int compareTo(BannerInfo o) {
+        return this.ratingsInfo().average().compareTo(o.ratingsInfo().average());
+    }
 
     @Immutable
     interface RatingsInfo extends WithRatingsInfo {

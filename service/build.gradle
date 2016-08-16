@@ -4,9 +4,6 @@ dependencies {
     compile project(':persistence')
     compile kotlin
     compile okhttp3
-    compile(jackson_databind) {
-        exclude module: 'jackson-annotations'
-    }
     compile(jackson_datatype_jsr310) {
         exclude module: 'jackson-databind'
         exclude module: 'jackson-annotations'

@@ -28,14 +28,14 @@ open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
                                                     val episodeService: EpisodeService,
                                                     val executor: Executor) : SerialService {
 
-    override fun getSerialInfo(id: Long): CompletableFuture<Serial> = httpUtils.getReader(Constants.SERIES + id).thenApply { jsonUtils.getSingleObject(it, Serial::class.java) }
+    override fun getSerialInfo(id: Long): CompletableFuture<Serial> = httpUtils.get(Constants.SERIES + id).thenApply { jsonUtils.getSingleObject(it, Serial::class.java) }
 
     override fun getSerial(id: Long): CompletableFuture<Serial> {
 
-        val poster = httpUtils.getReader(Constants.SERIES + "$id/images/query?keyType=poster").thenApply {
+        val poster = httpUtils.get(Constants.SERIES + "$id/images/query?keyType=poster").thenApply {
             jsonUtils.getListData(it, BannerInfo::class.java).max()?.fileName
         }
-        val seasonBanners = httpUtils.getReader(Constants.SERIES + "$id/images/query?keyType=season")
+        val seasonBanners = httpUtils.get(Constants.SERIES + "$id/images/query?keyType=season")
                 .thenApply { jsonUtils.getListData(it, BannerInfo::class.java) }
                 .thenApply { it.groupBy { it.key }.values.asSequence().map { it.max() }.filterNotNull().associateBy({ it.key!!.toInt() }, { it.fileName }) }
 
@@ -43,7 +43,7 @@ open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
                 .thenApply { it.groupBy { it.season }.entries.map { Season(it.key, null, it.value) } }
                 .thenCombine(seasonBanners) { seasons, banners -> seasons.map { it.banner = banners[it.number]; return@map it } }
 
-        return httpUtils.getReader(Constants.SERIES + id)
+        return httpUtils.get(Constants.SERIES + id)
                 .thenApply { jsonUtils.getSingleObject(it, Serial::class.java) }
                 .thenCombine(poster) { serial, poster -> serial.poster = poster; return@thenCombine serial }
                 .thenCombine(seasons) { serial, seasons -> serial.seasons = seasons; return@thenCombine serial }

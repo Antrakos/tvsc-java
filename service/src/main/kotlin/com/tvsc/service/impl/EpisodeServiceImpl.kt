@@ -27,7 +27,7 @@ open class EpisodeServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
                                                      val executor: Executor) : EpisodeService {
 
     override fun getEpisode(id: Long): CompletableFuture<Episode> {
-        return httpUtils.getReader(Constants.EPISODES + id).thenApply { jsonUtils.getSingleObject(it, Episode::class.java) }
+        return httpUtils.get(Constants.EPISODES + id).thenApply { jsonUtils.getSingleObject(it, Episode::class.java) }
     }
 
     override fun getEpisodesOfSerial(serialId: Long): CompletableFuture<List<Episode>> {

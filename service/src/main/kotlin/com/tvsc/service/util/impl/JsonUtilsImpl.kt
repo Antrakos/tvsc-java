@@ -10,7 +10,6 @@ import com.tvsc.service.util.JsonUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
-import java.io.Reader
 
 /**
  * @author Taras Zubrei
@@ -19,17 +18,17 @@ import java.io.Reader
 @Primary
 open class JsonUtilsImpl @Autowired constructor(val objectMapper: ObjectMapper) : JsonUtils {
 
-    override fun <T> getPage(json: Reader, clazz: Class<T>): Pair<List<T>, Int> = JsonException("Cannot read tree").wrap {
+    override fun <T> getPage(json: String, clazz: Class<T>): Pair<List<T>, Int> = JsonException("Cannot read tree").wrap {
         objectMapper.readerFor(unwrap(list(clazz))).readValue<Page<List<T>>>(json)
     }.let { it.data!!.to(it.links!!.last) }
 
-    override fun <T> getListData(json: Reader, clazz: Class<T>): List<T> = JsonException("Cannot read tree").wrap {
+    override fun <T> getListData(json: String, clazz: Class<T>): List<T> = JsonException("Cannot read tree").wrap {
         objectMapper.reader()
                 .forType(list(clazz))
                 .readValue(objectMapper.readTree(json).at("/data"))
     }
 
-    override fun <T> getSingleObject(json: Reader, clazz: Class<T>): T = JsonException("Cannot read tree").wrap {
+    override fun <T> getSingleObject(json: String, clazz: Class<T>): T = JsonException("Cannot read tree").wrap {
         objectMapper.readerFor(clazz).withRootName(Constants.ROOT).readValue(json);
     }
 

@@ -17,6 +17,7 @@ import spock.lang.Specification
 
 import java.time.LocalDate
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ForkJoinPool
 
 /**
  *
@@ -56,7 +57,7 @@ class EpisodeServiceSpecification extends Specification {
 
     def "given future of episode when get the object then check firstAired date"() {
         given:
-        episodeService = new EpisodeServiceImpl(httpUtils, jsonUtils, paginationUtils, episodeRepository, userService)
+        episodeService = new EpisodeServiceImpl(httpUtils, jsonUtils, paginationUtils, episodeRepository, userService, ForkJoinPool.commonPool())
         Episode expected = new Episode(id: 5598674L,
                 firstAired: LocalDate.of(2016, 5, 24),
                 image: 'episodes/279121/5598674.jpg',

@@ -5,12 +5,12 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.junit.platform:junit-platform-gradle-plugin:$junit_platform_version"
+        classpath "me.champeau.gradle:jmh-gradle-plugin:$jmh_gradle_plugin_version"
+        classpath "gradle.plugin.com.github.lkishalmi.gradle:gradle-gatling-plugin:$gradle_gatling_plugin"
     }
 }
 plugins {
-    id 'me.champeau.gradle.jmh' version '0.3.1'
     id 'com.github.ben-manes.versions' version '0.13.0'
-    id 'com.github.lkishalmi.gatling' version '0.3.1'
 }
 group 'TV Series Compaion'
 ext {
@@ -48,6 +48,8 @@ ext {
     spring_boot_starter_hateoas = "org.springframework.boot:spring-boot-starter-hateoas:$spring_boot_version"
     spring_boot_starter_actuator = "org.springframework.boot:spring-boot-starter-actuator:$spring_boot_version"
     spring_boot_starter_jdbc = "org.springframework.boot:spring-boot-starter-jdbc:$spring_boot_version"
+    moshi = "com.squareup.moshi:moshi:$moshi_version"
+    immutables = "org.immutables:value:$immutables_version"
     jackson_list = [jackson_core, jackson_databind, jackson_datatype_jsr310]
     junit_list = [junit_jupiter_api, junit_jupiter_engine, junit_platform_runner, spring_test_junit5]
 }

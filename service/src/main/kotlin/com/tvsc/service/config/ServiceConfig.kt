@@ -7,15 +7,13 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.squareup.moshi.Moshi
 import com.tvsc.core.model.BannerInfo
 import com.tvsc.core.model.Episode
 import com.tvsc.core.model.Serial
 import com.tvsc.persistence.config.PersistenceConfig
 import com.tvsc.service.Constants
-import com.tvsc.service.json.BannerInfoDeserializer
-import com.tvsc.service.json.EpisodeDeserializer
-import com.tvsc.service.json.LocalDateDeserializer
-import com.tvsc.service.json.SerialDeserializer
+import com.tvsc.service.json.*
 import okhttp3.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -63,6 +61,9 @@ open class ServiceConfig {
             .registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer())
             .registerTypeAdapter(Serial::class.java, SerialDeserializer())
             .create()
+
+    @Bean
+    open fun moshi(): Moshi = Moshi.Builder().add(LocalDateAdapter()).build()
 
     @Bean
     open fun commonLoggingBeanPostProcessor() = CommonLoggingBeanPostProcessor()

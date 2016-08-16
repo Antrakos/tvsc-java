@@ -20,9 +20,6 @@ import java.util.function.Supplier
 @Component
 open class HttpUtilsImpl @Autowired constructor(val okHttpClient: OkHttpClient, val executor: Executor) : HttpUtils {
     override fun get(url: String): CompletableFuture<String> = getResponse(url).thenApply { it.string() }
-    override fun getBody(url: String): CompletableFuture<BufferedSource> = getResponse(url).thenApply { it.source() }
-    override fun getInputStream(url: String): CompletableFuture<InputStream> = getResponse(url).thenApply { it.byteStream() }
-    override fun getReader(url: String): CompletableFuture<Reader> = getResponse(url).thenApply { InputStreamReader(it.byteStream()) }
     private fun getResponse(url: String) = CompletableFuture.supplyAsync(Supplier {
         okHttpClient.newCall(Request.Builder().url(url).build()).execute().body()
     }, executor)

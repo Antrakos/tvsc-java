@@ -11,7 +11,4 @@ import java.util.concurrent.CompletableFuture
  */
 interface HttpUtils {
     fun get(url: String): CompletableFuture<String>
-    fun getBody(url: String): CompletableFuture<BufferedSource>
-    fun getInputStream(url: String): CompletableFuture<InputStream>
-    fun getReader(url: String): CompletableFuture<Reader>
 }

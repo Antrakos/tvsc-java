@@ -9,7 +9,6 @@ import com.tvsc.service.json.Page
 import com.tvsc.service.util.JsonUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import java.io.Reader
 
 /**
  *
@@ -18,18 +17,18 @@ import java.io.Reader
 @Component
 open class GsonUtilsImpl @Autowired constructor(val gson: Gson) : JsonUtils {
 
-    override fun <T> getPage(json: Reader, clazz: Class<T>): Pair<List<T>, Int> = JsonException("Cannot read tree").wrap {
+    override fun <T> getPage(json: String, clazz: Class<T>): Pair<List<T>, Int> = JsonException("Cannot read tree").wrap {
         gson.fromJson(json, JsonObject::class.java).let {
             Page<List<T>>(gson.fromJson(it, JsonObject::class.java).get(Constants.ROOT).asJsonArray.map { gson.fromJson(it, clazz) },
                     gson.fromJson(it.get("links"), Links::class.java))
         }
     }.let { it.data!!.to(it.links!!.last) }
 
-    override fun <T> getListData(json: Reader, clazz: Class<T>): List<T> = JsonException("Cannot read tree").wrap {
+    override fun <T> getListData(json: String, clazz: Class<T>): List<T> = JsonException("Cannot read tree").wrap {
         gson.fromJson(json, JsonObject::class.java).get(Constants.ROOT).asJsonArray.map { gson.fromJson(it, clazz) }
     }
 
-    override fun <T> getSingleObject(json: Reader, clazz: Class<T>): T = JsonException("Cannot read tree").wrap {
+    override fun <T> getSingleObject(json: String, clazz: Class<T>): T = JsonException("Cannot read tree").wrap {
         gson.fromJson(json, JsonObject::class.java).get(Constants.ROOT).let { gson.fromJson(it, clazz) }
     }
 }

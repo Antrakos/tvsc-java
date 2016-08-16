@@ -1,23 +1,23 @@
 package com.tvsc.core.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.squareup.moshi.Json;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 /**
  * @author Taras Zubrei
  */
 @Data
 @NoArgsConstructor
-public class BannerInfo implements Comparable<BannerInfo>{
+public class BannerInfo implements Comparable<BannerInfo> {
     @JsonProperty("keyType")
+    @Json(name = "keyType")
     private String type;
     @JsonProperty("subKey")
+    @Json(name = "subKey")
     private String key;
-    @JsonProperty
     private String fileName;
-    @JsonProperty
     private RatingsInfo ratingsInfo;
 
     @Override
@@ -28,9 +28,7 @@ public class BannerInfo implements Comparable<BannerInfo>{
     @Data
     @NoArgsConstructor
     public static class RatingsInfo {
-        @JsonProperty
         private Double average;
-        @JsonProperty
         private Long count;
     }
 }

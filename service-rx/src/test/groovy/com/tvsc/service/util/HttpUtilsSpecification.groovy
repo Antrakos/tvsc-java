@@ -20,9 +20,9 @@ class HttpUtilsSpecification extends Specification {
 
     def "given CompletableFuture of String when get String response then it is not empty"() {
         given:
-        def completableFuture = httpUtils.get("$Constants.SERIES/78901")
+        def single = httpUtils.get("$Constants.SERIES/78901")
         when:
-        def response = completableFuture.get()
+        def response = single.toBlocking().value()
         then:
         !response.empty
     }

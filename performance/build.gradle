@@ -1,4 +1,4 @@
-group 'TV Series Compaion'
+group 'performance'
 apply plugin: 'com.github.lkishalmi.gatling'
 apply plugin: 'me.champeau.gradle.jmh'
 dependencies {

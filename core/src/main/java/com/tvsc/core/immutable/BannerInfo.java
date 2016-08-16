@@ -1,11 +1,12 @@
 package com.tvsc.core.immutable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.squareup.moshi.Json;
+import org.jetbrains.annotations.Nullable;
 
-import static org.immutables.value.Value.Default;
 import static org.immutables.value.Value.Immutable;
 
 /**
@@ -21,26 +22,26 @@ public interface BannerInfo extends WithBannerInfo, Comparable<BannerInfo> {
 
     @JsonProperty("subKey")
     @Json(name = "subKey")
-    @Default
-    default String key() {
-        return null;
-    }
+    @Nullable
+    String key();
 
     String fileName();
 
     RatingsInfo ratingsInfo();
 
     default int compareTo(BannerInfo o) {
-        return this.ratingsInfo().average().compareTo(o.ratingsInfo().average());
+        return this.ratingsInfo().average.compareTo(o.ratingsInfo().average);
     }
 
-    @Immutable
-    interface RatingsInfo extends WithRatingsInfo {
-        Double average();
+    class RatingsInfo {
+        Double average;
+        public Long count;
 
-        Long count();
-
-        class Builder extends ImmutableRatingsInfo.Builder {
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        public RatingsInfo(@JsonProperty("average") Double average,
+                           @JsonProperty("count") Long count) {
+            this.average = average;
+            this.count = count;
         }
     }
 

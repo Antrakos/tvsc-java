@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.squareup.moshi.Json;
 import org.immutables.value.Value.Default;
 import org.immutables.value.Value.Immutable;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,80 +22,39 @@ public interface Serial extends WithSerial {
 
     @JsonProperty("seriesName")
     @Json(name = "seriesName")
-    @Default
-    default String name() {
-        return null;
-    }
+    @Nullable String name();
 
-    @Default
-    default String banner() {
-        return null;
-    }
+    @Nullable String banner();
 
-    @Default
-    default String overview() {
-        return null;
-    }
+    @Nullable String overview();
 
-    @Default
-    default LocalDate firstAired() {
-        return null;
-    }
+    @Nullable LocalDate firstAired();
 
-    @Default
-    default String network() {
-        return null;
-    }
+    @Nullable String network();
 
-    @Default
-    default String imdbId() {
-        return null;
-    }
+    @Nullable String imdbId();
 
-    @Default
-    default String zap2itId() {
-        return null;
-    }
+    @Nullable String zap2itId();
 
-    @Default
-    default String airsDayOfWeek() {
-        return null;
-    }
+    @Nullable String airsDayOfWeek();
 
-    @Default
-    default String airsTime() {
-        return null;
-    }
+    @Nullable String airsTime();
 
     @Default
     default List<String> genre() {
         return null;
     }
 
-    @Default
-    default String rating() {
-        return null;
-    }
+    @Nullable String rating();
 
-    @Default
-    default String runtime() {
-        return null;
-    }
+    @Nullable String runtime();
 
-    @Default
-    default String status() {
-        return null;
-    }
+    @Nullable String status();
 
-    @Default
-    default String poster() {
-        return null;
-    }
+    @Nullable String poster();
 
-    @Default
-    default List<Season> seasons() {
-        return null;
-    }
+    @Nullable
+    List<Season> seasons();
 
     class Builder extends ImmutableSerial.Builder {
     }

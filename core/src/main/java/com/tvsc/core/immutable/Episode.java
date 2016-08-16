@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.squareup.moshi.Json;
+import org.immutables.value.Value.Default;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
 
-import static org.immutables.value.Value.Default;
 import static org.immutables.value.Value.Immutable;
 
 /**
@@ -21,46 +22,25 @@ public interface Episode extends WithEpisode {
 
     @JsonProperty("episodeName")
     @Json(name = "episodeName")
-    @Default
-    default String name() {
-        return null;
-    }
+    @Nullable String name();
 
     @JsonProperty("airedEpisodeNumber")
     @Json(name = "airedEpisodeNumber")
-    @Default
-    default Integer number() {
-        return null;
-    }
+    @Nullable Integer number();
 
-    @Default
-    default LocalDate firstAired() {
-        return null;
-    }
+    @Nullable LocalDate firstAired();
 
-    @Default
-    default String overview() {
-        return null;
-    }
+    @Nullable String overview();
 
     @JsonProperty("siteRating")
     @Json(name = "siteRating")
-    @Default
-    default Double rating() {
-        return null;
-    }
+    @Nullable Double rating();
 
-    @Default
-    default String imdbId() {
-        return null;
-    }
+    @Nullable String imdbId();
 
     @JsonProperty("airedSeason")
     @Json(name = "airedSeason")
-    @Default
-    default Integer season() {
-        return null;
-    }
+    @Nullable Integer season();
 
     @Default
     default Boolean watched() {
@@ -69,10 +49,7 @@ public interface Episode extends WithEpisode {
 
     @JsonProperty("filename")
     @Json(name = "filename")
-    @Default
-    default String image() {
-        return null;
-    }
+    @Nullable String image();
 
     class Builder extends ImmutableEpisode.Builder {
     }

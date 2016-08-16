@@ -1,12 +1,14 @@
 package com.tvsc.service
 
 import com.tvsc.core.AppProfiles
-import com.tvsc.core.model.Serial
+import com.tvsc.core.immutable.Serial
 import com.tvsc.service.config.ServiceConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.transaction.annotation.Transactional
+import rx.Observable
+import rx.Single
 import spock.lang.Specification
 
 import java.time.LocalDate
@@ -25,31 +27,31 @@ class SerialServiceSpecification extends Specification {
 
     def "given future of serial info when get the info then check firstAired date and info doesn't contain seasons nad therefore episodes"() {
         given:
-        CompletableFuture<Serial> completableFuture = serialService.getSerialInfo(279121L)
+        Single<Serial> single = serialService.getSerialInfo(279121L)
         when:
-        Serial serialInfo = completableFuture.join()
+        Serial serialInfo = single.toBlocking().value()
         then:
-        serialInfo.firstAired == LocalDate.of(2014, 10, 7)
-        serialInfo.seasons == null
+        serialInfo.firstAired() == LocalDate.of(2014, 10, 7)
+        serialInfo.seasons() == null
     }
 
     def "given future of serial when get the object then check firstAired date and contains seasons and therefore episodes"() {
         given:
-        CompletableFuture<Serial> completableFuture = serialService.getSerial(279121L)
+        Single<Serial> single = serialService.getSerial(279121L)
         when:
-        Serial serial = completableFuture.join()
+        Serial serial = single.toBlocking().value()
         then:
-        serial.firstAired == LocalDate.of(2014, 10, 7)
-        !serial.seasons.empty
+        serial.firstAired() == LocalDate.of(2014, 10, 7)
+        !serial.seasons().empty
     }
 
     def "given future of serial list when get the list then assure that all series has seasons and therefore episodes"() {
         given:
-        CompletableFuture<List<Serial>> completableFuture = serialService.restoreAllData()
+        Observable<Serial> observable = serialService.restoreAllData()
         when:
-        List<Serial> series = completableFuture.join()
+        List<Serial> series = observable.toList().toSingle().toBlocking().value()
         then:
-        series.stream().allMatch { !it.seasons.empty }
+        series.stream().allMatch { !it.seasons().empty }
     }
 
     def "when add serial then check that operation was successful"() {

@@ -1,7 +1,7 @@
 package com.tvsc.core.immutable;
 
-import org.immutables.value.Value.Default;
 import org.immutables.value.Value.Immutable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -12,10 +12,7 @@ import java.util.List;
 public interface Season extends WithSeason {
     Integer number();
 
-    @Default
-    default String banner() {
-        return null;
-    }
+    @Nullable String banner();
 
     List<Episode> episodes();
 

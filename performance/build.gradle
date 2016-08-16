@@ -1,0 +1,12 @@
+group 'TV Series Compaion'
+apply plugin: 'com.github.lkishalmi.gatling'
+apply plugin: 'me.champeau.gradle.jmh'
+dependencies {
+    compile project(':web')
+    jmhCompile project(':web')
+    gatlingCompile project(':web')
+}
+jmh { //TODO: Add logging configuration
+    jmhVersion = '1.12'
+    duplicateClassesStrategy = 'EXCLUDE'
+}

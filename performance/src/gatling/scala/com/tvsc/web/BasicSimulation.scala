@@ -20,5 +20,5 @@ class BasicSimulation extends Simulation {
     .pause(1)
     .exec(http("get watched episodes").get("/series/78901/episodes/watched").check(status.is(200)))
 
-  setUp(scn.inject(atOnceUsers(2)).protocols(httpConf))
+  setUp(scn.inject(atOnceUsers(5)).protocols(httpConf))
 }

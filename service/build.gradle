@@ -1,5 +1,4 @@
 group 'service'
-apply plugin: 'me.champeau.gradle.jmh'
 dependencies {
     compile project(':persistence')
     compile kotlin
@@ -9,9 +8,4 @@ dependencies {
         exclude module: 'jackson-annotations'
     }
     compile gson
-    jmhCompile project(':service')
-}
-jmh { //TODO: Add logging configuration
-    jmhVersion = '1.12'
-    duplicateClassesStrategy = 'EXCLUDE'
 }

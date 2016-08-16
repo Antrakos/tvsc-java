@@ -6,7 +6,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.junit.platform:junit-platform-gradle-plugin:$junit_platform_version"
         classpath "me.champeau.gradle:jmh-gradle-plugin:$jmh_gradle_plugin_version"
-        classpath "gradle.plugin.com.github.lkishalmi.gradle:gradle-gatling-plugin:$gradle_gatling_plugin"
+        classpath "gradle.plugin.com.github.lkishalmi.gradle:gradle-gatling-plugin:$gradle_gatling_plugin_version"
     }
 }
 plugins {

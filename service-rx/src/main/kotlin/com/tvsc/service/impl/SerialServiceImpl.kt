@@ -1,6 +1,7 @@
 package com.tvsc.service.impl
 
 import com.tvsc.core.immutable.BannerInfo
+import com.tvsc.core.immutable.Episode
 import com.tvsc.core.immutable.Season
 import com.tvsc.core.immutable.Serial
 import com.tvsc.persistence.repository.SerialRepository
@@ -39,9 +40,19 @@ open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
                 .groupBy { it.key() }
                 .flatMap { it.toList().map { it.max() }.map { it!!.fileName() } }
 
+        val watchedEpisodes = episodeService.getWatchedEpisodes(id)
         val seasons: Observable<Season> = episodeService.getEpisodesOfSerial(id)
                 .groupBy { it.season() }
-                .flatMap { group -> group.toList().map { Season.Builder().number(group.key).episodes(it).build() } }
+                .flatMap { group ->
+                    group.toList().map {
+                        Season.Builder().number(group.key).episodes(
+                                if (watchedEpisodes.isEmpty.toSingle().toBlocking().value())
+                                    it
+                                else
+                                    setWatchedEpisodes(watchedEpisodes.toList().toSingle().toBlocking().value(), it)
+                        ).build()
+                    }
+                }
                 .zipWith(seasonBanners) { season, banner -> season.withBanner(banner) }
 
         return httpUtils.get(Constants.SERIES + id)
@@ -53,25 +64,14 @@ open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
     override fun restoreAllData(): Observable<Serial> = Observable.just(serialRepository.getSeries(userService.getCurrentUser().id()))
             .flatMapIterable { it }
             .flatMap { this.getSerial(it).toObservable() }
-            .flatMap {
-                serial ->
-                episodeService.getWatchedEpisodes(serial.id())
-                        .toList()
-                        .map { setWatchedEpisodesToSerial(it, serial) }
+
+    private fun setWatchedEpisodes(watchedEpisodes: List<Long>, episodes: List<Episode>): List<Episode> =
+            episodes.map {
+                if (watchedEpisodes.contains(it.id()))
+                    it.withWatched(true)
+                else
+                    it
             }
-
-    private fun setWatchedEpisodesToSerial(watchedEpisodes: List<Long>, serial: Serial): Serial =
-            serial.withSeasons(
-                    serial.seasons()
-                            !!.map {
-                                it.withEpisodes(it.episodes()
-                                        .asSequence()
-                                        .filter { watchedEpisodes.contains(it.id()) }
-                                        .map { it.withWatched(true) }
-                                        .toList())
-                            }
-            )
-
 
     override fun count(): Long = serialRepository.count(userService.getCurrentUser().id())
 

@@ -23,6 +23,7 @@ public class EpisodeRepositoryImpl implements EpisodeRepository {
     private JdbcTemplate jdbcTemplate;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Long> getEpisodes(Long userId, Long serialId) {
         return jdbcTemplate.query("SELECT episode_id FROM users_episodes_mapping WHERE user_id=? AND serial_id=?", new Object[]{userId, serialId}, (rs, rowNum) -> {
             return rs.getLong(1);

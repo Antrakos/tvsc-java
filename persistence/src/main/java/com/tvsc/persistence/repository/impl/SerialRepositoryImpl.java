@@ -18,6 +18,7 @@ public class SerialRepositoryImpl implements SerialRepository {
     private JdbcTemplate jdbcTemplate;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Long> getSeries(Long userId) {
         return jdbcTemplate.query("SELECT serial_id FROM users_series_mapping WHERE user_id=?", new Object[]{userId}, (rs, rowNum) -> {
             return rs.getLong(1);
@@ -25,6 +26,7 @@ public class SerialRepositoryImpl implements SerialRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Long count(Long userId) {
         return jdbcTemplate.queryForObject("SELECT count(1) FROM users_series_mapping WHERE user_id=?", new Object[]{userId}, Long.class);
     }

@@ -1,5 +1,6 @@
 package com.tvsc.service.util.impl
 
+import com.tvsc.service.cache.CacheProvider
 import com.tvsc.service.util.HttpUtils
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -15,8 +16,17 @@ import java.io.IOException
  * @author Taras Zubrei
  */
 @Component
-open class HttpUtilsImpl @Autowired constructor(val okHttpClient: OkHttpClient) : HttpUtils {
-    override fun get(url: String): Single<String> = getResponse(url).map { it.body().string() }
+open class HttpUtilsImpl @Autowired constructor(val okHttpClient: OkHttpClient,
+                                                val cacheProvider: CacheProvider) : HttpUtils {
+    override fun get(url: String): Single<String> =
+            if (cacheProvider.hasKey(url))
+                Single.just(cacheProvider.get(url))
+            else
+                getResponse(url)
+                        .map { it.body().string() }
+                        .map { cacheProvider.put(url, it) }
+
+
     private fun getResponse(url: String) = Observable.defer {
         try {
             val response = okHttpClient.newCall(Request.Builder().url(url).build()).execute()

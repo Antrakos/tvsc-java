@@ -8,4 +8,5 @@ dependencies {
         exclude module: 'jackson-annotations'
     }
     compile rx_kotlin
+    compile guava
 }

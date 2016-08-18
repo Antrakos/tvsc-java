@@ -5,9 +5,9 @@ import com.tvsc.persistence.config.PersistenceConfig
 import com.tvsc.persistence.exception.PersistenceException
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.SpringApplicationConfiguration
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 
@@ -20,7 +20,7 @@ import java.sql.BatchUpdateException
 @Slf4j
 @Transactional
 @ActiveProfiles(AppProfiles.TEST)
-@SpringApplicationConfiguration(classes = PersistenceConfig)
+@ContextConfiguration(classes = PersistenceConfig)
 class EpisodeRepositorySpecification extends Specification {
     @Autowired
     private EpisodeRepository episodeRepository

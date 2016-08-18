@@ -64,7 +64,8 @@ subprojects {
 
     repositories {
         mavenCentral()
-        maven { url "https://jitpack.io" }
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://repo.spring.io/libs-milestone' }
     }
     dependencies {
         testCompile spring_test, hamcrest, mockito, hsqldb//, junit_list

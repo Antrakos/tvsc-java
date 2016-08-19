@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import rx.Observable
 import rx.Single
-import java.io.IOException
 
 /**
  *
@@ -31,7 +30,7 @@ open class HttpUtilsImpl @Autowired constructor(val okHttpClient: OkHttpClient,
         try {
             val response = okHttpClient.newCall(Request.Builder().url(url).build()).execute()
             Observable.just(response)
-        } catch (e: IOException) {
+        } catch (e: Throwable) {
             Observable.error<Response>(e)
         }
     }.toSingle()

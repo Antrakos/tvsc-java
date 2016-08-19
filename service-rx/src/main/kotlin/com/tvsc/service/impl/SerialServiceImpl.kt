@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import rx.Observable
 import rx.Single
+import rx.lang.kotlin.deferredObservable
 
 /**
  *
@@ -31,14 +32,15 @@ open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
 
     override fun getSerial(id: Long): Single<Serial> {
 
-        val poster = httpUtils.get(Constants.SERIES + "$id/images/query?keyType=poster").map {
+        val poster: Single<String> = httpUtils.get(Constants.SERIES + "$id/images/query?keyType=poster").map {
             jsonUtils.getListData(it, BannerInfo::class.java).max()?.fileName()
         }
         val seasonBanners: Observable<String> = httpUtils.get(Constants.SERIES + "$id/images/query?keyType=season")
                 .map { jsonUtils.getListData(it, BannerInfo::class.java) }
                 .flatMapObservable { Observable.from(it) }
                 .groupBy { it.key() }
-                .flatMap { it.toList().map { it.max() }.map { it!!.fileName() } }
+                .flatMap { it.toList() }
+                .map { it.max()!!.fileName() }
 
         val watchedEpisodes = episodeService.getWatchedEpisodes(id)
         val seasons: Observable<Season> = episodeService.getEpisodesOfSerial(id)
@@ -61,7 +63,9 @@ open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
                 .flatMap { serial -> seasons.toList().toSingle().map { serial.withSeasons(it) } }
     }
 
-    override fun restoreAllData(): Observable<Serial> = Observable.just(serialRepository.getSeries(userService.getCurrentUser().id()))
+    override fun restoreAllData(): Observable<Serial> = deferredObservable {
+        Observable.just(serialRepository.getSeries(userService.getCurrentUser().id()))
+    }
             .flatMapIterable { it }
             .flatMap { this.getSerial(it).toObservable() }
 

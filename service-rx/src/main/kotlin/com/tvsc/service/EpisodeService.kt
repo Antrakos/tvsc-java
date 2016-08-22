@@ -1,6 +1,6 @@
 package com.tvsc.service
 
-import com.tvsc.core.immutable.Episode
+import com.tvsc.core.model.Episode
 import rx.Observable
 import rx.Single
 

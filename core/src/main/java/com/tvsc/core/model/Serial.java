@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.squareup.moshi.Json;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
+@Accessors(chain = true)
 public class Serial {
     private Long id;
     @JsonProperty("seriesName")

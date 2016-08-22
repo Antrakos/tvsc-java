@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.squareup.moshi.Json;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
  * @author Taras Zubrei
  */
 @Data
 @NoArgsConstructor
+@Accessors(chain = true)
 public class BannerInfo implements Comparable<BannerInfo> {
     @JsonProperty("keyType")
     @Json(name = "keyType")
@@ -27,6 +29,7 @@ public class BannerInfo implements Comparable<BannerInfo> {
 
     @Data
     @NoArgsConstructor
+    @Accessors(chain = true)
     public static class RatingsInfo {
         private Double average;
         private Long count;

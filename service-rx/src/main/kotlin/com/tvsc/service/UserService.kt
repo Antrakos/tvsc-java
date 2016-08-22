@@ -1,6 +1,6 @@
 package com.tvsc.service
 
-import com.tvsc.core.immutable.User
+import com.tvsc.core.model.User
 
 /**
  *

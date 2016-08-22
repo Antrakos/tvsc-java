@@ -2,11 +2,12 @@ group 'service-rx'
 dependencies {
     compile project(':persistence')
     compile kotlin
-    compile okhttp3
     compile(jackson_datatype_jsr310) {
         exclude module: 'jackson-databind'
         exclude module: 'jackson-annotations'
     }
     compile rx_kotlin
     compile guava
+    compile async_http_client
+    compile (async_http_client_rxjava)
 }

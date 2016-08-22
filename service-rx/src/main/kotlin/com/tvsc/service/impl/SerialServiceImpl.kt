@@ -1,9 +1,8 @@
 package com.tvsc.service.impl
 
-import com.tvsc.core.immutable.BannerInfo
-import com.tvsc.core.immutable.Episode
-import com.tvsc.core.immutable.Season
-import com.tvsc.core.immutable.Serial
+import com.tvsc.core.model.BannerInfo
+import com.tvsc.core.model.Season
+import com.tvsc.core.model.Serial
 import com.tvsc.persistence.repository.SerialRepository
 import com.tvsc.service.Constants
 import com.tvsc.service.EpisodeService
@@ -33,53 +32,45 @@ open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
     override fun getSerial(id: Long): Single<Serial> {
 
         val poster: Single<String> = httpUtils.get(Constants.SERIES + "$id/images/query?keyType=poster").map {
-            jsonUtils.getListData(it, BannerInfo::class.java).max()?.fileName()
+            jsonUtils.getListData(it, BannerInfo::class.java).max()?.fileName
         }
         val seasonBanners: Observable<String> = httpUtils.get(Constants.SERIES + "$id/images/query?keyType=season")
                 .map { jsonUtils.getListData(it, BannerInfo::class.java) }
                 .flatMapObservable { Observable.from(it) }
-                .groupBy { it.key() }
+                .groupBy { it.key }
                 .flatMap { it.toList() }
-                .map { it.max()!!.fileName() }
+                .map { it.max()!!.fileName }
 
         val watchedEpisodes = episodeService.getWatchedEpisodes(id)
         val seasons: Observable<Season> = episodeService.getEpisodesOfSerial(id)
-                .groupBy { it.season() }
+                .groupBy { it.season }
                 .flatMap { group ->
-                    group.toList().map {
-                        Season.Builder().number(group.key).episodes(
-                                if (watchedEpisodes.isEmpty.toSingle().toBlocking().value())
-                                    it
-                                else
-                                    setWatchedEpisodes(watchedEpisodes.toList().toSingle().toBlocking().value(), it)
-                        ).build()
-                    }
+                    group.toList().map { Season().setNumber(group.key).setEpisodes(it) }
                 }
-                .zipWith(seasonBanners) { season, banner -> season.withBanner(banner) }
+                .zipWith(seasonBanners) { season, banner -> season.setBanner(banner) }
 
         return httpUtils.get(Constants.SERIES + id)
                 .map { jsonUtils.getSingleObject(it, Serial::class.java) }
-                .flatMap { serial -> poster.map { serial.withPoster(it) } }
-                .flatMap { serial -> seasons.toList().toSingle().map { serial.withSeasons(it) } }
+                .flatMap { serial -> poster.map { serial.setPoster(it) } }
+                .flatMap { serial -> seasons.toList().toSingle().map { serial.setSeasons(it) } }
+                .doOnSuccess {
+                    val watched = watchedEpisodes.toList().toSingle().toBlocking().value()
+                    it.seasons.asSequence().flatMap { it.episodes.asSequence() }.forEach {
+                        if (watched.contains(it.id))
+                            it.watched = true
+                    }
+                }
     }
 
     override fun restoreAllData(): Observable<Serial> = deferredObservable {
-        Observable.just(serialRepository.getSeries(userService.getCurrentUser().id()))
+        Observable.just(serialRepository.getSeries(userService.getCurrentUser().id))
     }
             .flatMapIterable { it }
             .flatMap { this.getSerial(it).toObservable() }
 
-    private fun setWatchedEpisodes(watchedEpisodes: List<Long>, episodes: List<Episode>): List<Episode> =
-            episodes.map {
-                if (watchedEpisodes.contains(it.id()))
-                    it.withWatched(true)
-                else
-                    it
-            }
+    override fun count(): Long = serialRepository.count(userService.getCurrentUser().id)
 
-    override fun count(): Long = serialRepository.count(userService.getCurrentUser().id())
+    override fun addSerial(id: Long) = serialRepository.add(userService.getCurrentUser().id, id)
 
-    override fun addSerial(id: Long) = serialRepository.add(userService.getCurrentUser().id(), id)
-
-    override fun deleteSerial(id: Long) = serialRepository.delete(userService.getCurrentUser().id(), id)
+    override fun deleteSerial(id: Long) = serialRepository.delete(userService.getCurrentUser().id, id)
 }

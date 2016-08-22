@@ -1,6 +1,6 @@
 package com.tvsc.service.impl
 
-import com.tvsc.core.immutable.User
+import com.tvsc.core.model.User
 import com.tvsc.service.UserService
 import org.springframework.stereotype.Component
 
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Component
  */
 @Component
 open class UserServiceImpl : UserService {
-    override fun getCurrentUser(): User = User.Builder().id(1).name("Jack").build() //TODO: Security
+    override fun getCurrentUser(): User = User().setId(1).setName("Jack") //TODO: Security
 }

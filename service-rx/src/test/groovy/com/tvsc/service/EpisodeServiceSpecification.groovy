@@ -1,8 +1,8 @@
 package com.tvsc.service
 
 import com.tvsc.core.AppProfiles
-import com.tvsc.core.immutable.Episode
-import com.tvsc.core.immutable.User
+import com.tvsc.core.model.Episode
+import com.tvsc.core.model.User
 import com.tvsc.persistence.repository.EpisodeRepository
 import com.tvsc.service.config.ServiceConfig
 import com.tvsc.service.impl.EpisodeServiceImpl
@@ -41,7 +41,7 @@ class EpisodeServiceSpecification extends Specification {
         when:
         List<Episode> episodes = observable.toList().toBlocking().toFuture().get()
         then:
-        episodes.stream().allMatch { LocalDate.of(2005, 9, 12).isBefore(it.firstAired()) }
+        episodes.stream().allMatch { LocalDate.of(2005, 9, 12).isBefore(it.firstAired) }
     }
 
     def "given unwatched episodes when set them watched then check if operation is successful"() {
@@ -58,23 +58,22 @@ class EpisodeServiceSpecification extends Specification {
     def "given future of episode when get the object then check firstAired date"() {
         given:
         episodeService = new EpisodeServiceImpl(httpUtils, jsonUtils, paginationUtils, episodeRepository, userService)
-        Episode expected = new Episode.Builder()
-                .id(5598674L,)
-                .firstAired(LocalDate.of(2016, 5, 24),)
-                .image('episodes/279121/5598674.jpg',)
-                .imdbId('tt5215758',)
-                .name('The Race of His Life',)
-                .overview('Barry vows to stop Zoom after learning Zoom\'s true plans.',)
-                .number(23,)
-                .season(2,)
-                .rating(8.0,)
-                .watched(false)
-                .build()
+        Episode expected = new Episode()
+                .setId(5598674L)
+                .setFirstAired(LocalDate.of(2016, 5, 24))
+                .setImage('episodes/279121/5598674.setjpg')
+                .setImdbId('tt5215758')
+                .setName('The Race of His Life')
+                .setOverview('Barry vows to stop Zoom after learning Zoom\'s true plans.')
+                .setNumber(23)
+                .setSeason(2)
+                .setRating(8.0)
+                .setWatched(false)
 
         String json = """{"data": {"id": 5598674,"airedSeason": 2,"airedEpisodeNumber": 23,"episodeName": "The Race of His Life","firstAired": "2016-05-24","overview": "Barry vows to stop Zoom after learning Zoom's true plans.","lastUpdated": 1466154212,"filename": "episodes/279121/5598674.jpg","seriesId": 279121,"imdbId": "tt5215758","siteRating": 8}}"""
         httpUtils.get(_ as String) >> Single.just(json)
         jsonUtils.getSingleObject(json, Episode) >> expected
-        userService.getCurrentUser() >> new User.Builder().id(1L).name('Jack').build()
+        userService.getCurrentUser() >> new User().setId(1L).setName('Jack')
 
         Single<Episode> single = episodeService.getEpisode(5598674L)
         when:

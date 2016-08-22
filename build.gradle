@@ -52,6 +52,8 @@ ext {
     immutables = "org.immutables:value:$immutables_version"
     jetbrains_annotations = "org.jetbrains:annotations:$jetbrains_annotations_version"
     rx_kotlin = "io.reactivex:rxkotlin:$rx_kotlin_version"
+    async_http_client = "org.asynchttpclient:async-http-client:$async_http_client_version"
+    async_http_client_rxjava = "org.asynchttpclient:async-http-client-extras-rxjava:$async_http_client_version"
     jackson_list = [jackson_core, jackson_databind, jackson_datatype_jsr310]
     junit_list = [junit_jupiter_api, junit_jupiter_engine, junit_platform_runner, spring_test_junit5]
 }

@@ -1,6 +1,6 @@
 package com.tvsc.service.impl
 
-import com.tvsc.core.immutable.Episode
+import com.tvsc.core.model.Episode
 import com.tvsc.persistence.repository.EpisodeRepository
 import com.tvsc.service.Constants
 import com.tvsc.service.EpisodeService
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import rx.Observable
 import rx.Single
-import rx.lang.kotlin.deferredObservable
 import rx.lang.kotlin.toObservable
 
 /**
@@ -36,9 +35,9 @@ open class EpisodeServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
     }
 
     override fun getWatchedEpisodes(serialId: Long): Observable<Long> =
-            episodeRepository.getEpisodes(userService.getCurrentUser().id(), serialId).toObservable()
+            episodeRepository.getEpisodes(userService.getCurrentUser().id, serialId).toObservable()
 
     override fun setWatchedEpisodes(serialId: Long, episodes: List<Long>): Single<Unit> = Single.create {
-        it.onSuccess(episodeRepository.setWatched(userService.getCurrentUser().id(), serialId, episodes))
+        it.onSuccess(episodeRepository.setWatched(userService.getCurrentUser().id, serialId, episodes))
     }
 }

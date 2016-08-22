@@ -1,7 +1,7 @@
 package com.tvsc.service
 
 import com.tvsc.core.AppProfiles
-import com.tvsc.core.immutable.Serial
+import com.tvsc.core.model.Serial
 import com.tvsc.service.config.ServiceConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
@@ -12,7 +12,6 @@ import rx.Single
 import spock.lang.Specification
 
 import java.time.LocalDate
-import java.util.concurrent.CompletableFuture
 
 /**
  *
@@ -31,8 +30,8 @@ class SerialServiceSpecification extends Specification {
         when:
         Serial serialInfo = single.toBlocking().value()
         then:
-        serialInfo.firstAired() == LocalDate.of(2014, 10, 7)
-        serialInfo.seasons() == null
+        serialInfo.firstAired == LocalDate.of(2014, 10, 7)
+        serialInfo.seasons == null
     }
 
     def "given future of serial when get the object then check firstAired date and contains seasons and therefore episodes"() {
@@ -41,8 +40,8 @@ class SerialServiceSpecification extends Specification {
         when:
         Serial serial = single.toBlocking().value()
         then:
-        serial.firstAired() == LocalDate.of(2014, 10, 7)
-        !serial.seasons().empty
+        serial.firstAired == LocalDate.of(2014, 10, 7)
+        !serial.seasons.empty
     }
 
     def "given future of serial list when get the list then assure that all series has seasons and therefore episodes"() {
@@ -51,7 +50,7 @@ class SerialServiceSpecification extends Specification {
         when:
         List<Serial> series = observable.toList().toSingle().toBlocking().value()
         then:
-        series.stream().allMatch { !it.seasons().empty }
+        series.stream().allMatch { !it.seasons.empty }
     }
 
     def "when add serial then check that operation was successful"() {

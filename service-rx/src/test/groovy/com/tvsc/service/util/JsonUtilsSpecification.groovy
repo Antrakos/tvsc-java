@@ -1,6 +1,6 @@
 package com.tvsc.service.util
 
-import com.tvsc.core.immutable.Episode
+import com.tvsc.core.model.Episode
 import com.tvsc.service.config.ServiceConfig
 import com.tvsc.service.util.impl.JsonUtilsImpl
 import kotlin.Pair
@@ -19,21 +19,23 @@ class JsonUtilsSpecification extends Specification {
 
     @Shared
     List<Episode> expected = [
-            new Episode.Builder().id(5598674L)
-                    .firstAired(LocalDate.of(2016, 5, 24))
-                    .image('episodes/279121/5598674.jpg')
-                    .imdbId('tt5215758')
-                    .name('The Race of His Life')
-                    .overview('Barry vows to stop Zoom after learning Zoom\'s true plans.')
-                    .number(23)
-                    .season(2)
-                    .rating(8.0)
-                    .watched(false).build(),
-            new Episode.Builder().id(4894849L)
-                    .name('Hot wheels')
-                    .overview('Barry tries to stop Zoom.')
-                    .number(23)
-                    .season(2).build()
+            new Episode()
+                    .setId(5598674L)
+                    .setFirstAired(LocalDate.of(2016, 5, 24))
+                    .setImage('episodes/279121/5598674.jpg')
+                    .setImdbId('tt5215758')
+                    .setName('The Race of His Life')
+                    .setOverview('Barry vows to stop Zoom after learning Zoom\'s true plans.')
+                    .setNumber(23)
+                    .setSeason(2)
+                    .setRating(8.0)
+                    .setWatched(false),
+            new Episode()
+                    .setId(4894849L)
+                    .setName('Hot wheels')
+                    .setOverview('Barry tries to stop Zoom.')
+                    .setNumber(23)
+                    .setSeason(2)
     ] as List<Episode>
 
     def "single object"() {

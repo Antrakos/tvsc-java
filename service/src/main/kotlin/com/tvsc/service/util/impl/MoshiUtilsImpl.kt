@@ -15,7 +15,7 @@ import java.lang.reflect.Type
 @Component
 open class MoshiUtilsImpl @Autowired constructor(val moshi: Moshi) : JsonUtils {
     override fun <T> getPage(json: String, clazz: Class<T>): Pair<List<T>, Int> =
-            moshi.adapter<Page<List<T>>>(unwrap(list(clazz))).fromJson(json).let { it.data!!.to(it.links!!.last!!) }
+            moshi.adapter<Page<List<T>>>(unwrap(list(clazz))).fromJson(json).let { it.data!!.to(it.links!!.last) }
 
     override fun <T> getListData(json: String, clazz: Class<T>): List<T> =
             moshi.adapter<Page<List<T>>>(unwrap(list(clazz))).fromJson(json).data!!

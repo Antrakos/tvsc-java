@@ -81,6 +81,9 @@ subprojects {
         }
         testRuntime cglib, objenesis
     }
+    test {
+        testLogging.showStandardStreams = true
+    }
     configurations.compile.exclude group: 'commons-logging'
     configurations.compile.exclude module: 'logback-classic'
 }

@@ -7,7 +7,6 @@ import org.asynchttpclient.BoundRequestBuilder
 import org.asynchttpclient.RequestBuilder
 import org.asynchttpclient.Response
 import org.asynchttpclient.extras.rxjava.single.AsyncHttpSingle
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import rx.Single
 
@@ -16,8 +15,8 @@ import rx.Single
  * @author Taras Zubrei
  */
 @Component
-open class HttpUtilsImpl @Autowired constructor(val asyncHttpClient: AsyncHttpClient,
-                                                val cacheProvider: CacheProvider) : HttpUtils {
+open class HttpUtilsImpl constructor(val asyncHttpClient: AsyncHttpClient,
+                                     val cacheProvider: CacheProvider) : HttpUtils {
     override fun get(url: String): Single<String> =
             if (cacheProvider.hasKey(url))
                 Single.just(cacheProvider.get(url))

@@ -1,6 +1,7 @@
 package com.tvsc.service.cache
 
 import com.google.common.cache.CacheBuilder
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
 
@@ -8,6 +9,7 @@ import java.util.concurrent.TimeUnit
  *
  * @author Taras Zubrei
  */
+@Primary
 @Component
 open class GuavaCacheProvider : CacheProvider {
     private val map = CacheBuilder.newBuilder()

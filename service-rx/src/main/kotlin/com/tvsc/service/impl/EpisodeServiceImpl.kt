@@ -8,7 +8,6 @@ import com.tvsc.service.UserService
 import com.tvsc.service.util.HttpUtils
 import com.tvsc.service.util.JsonUtils
 import com.tvsc.service.util.PaginationUtils
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import rx.Observable
 import rx.Single
@@ -19,11 +18,11 @@ import rx.lang.kotlin.toObservable
  * @author Taras Zubrei
  */
 @Component
-open class EpisodeServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
-                                                     val jsonUtils: JsonUtils,
-                                                     val paginationUtils: PaginationUtils,
-                                                     val episodeRepository: EpisodeRepository,
-                                                     val userService: UserService) : EpisodeService {
+open class EpisodeServiceImpl constructor(val httpUtils: HttpUtils,
+                                          val jsonUtils: JsonUtils,
+                                          val paginationUtils: PaginationUtils,
+                                          val episodeRepository: EpisodeRepository,
+                                          val userService: UserService) : EpisodeService {
 
     override fun getEpisode(id: Long): Single<Episode> =
             httpUtils.get(Constants.EPISODES + id)

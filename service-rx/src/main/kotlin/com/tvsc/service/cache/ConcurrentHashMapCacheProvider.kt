@@ -1,6 +1,5 @@
 package com.tvsc.service.cache
 
-import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 
@@ -9,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap
  * @author Taras Zubrei
  */
 @Component
-@Primary
 open class ConcurrentHashMapCacheProvider : CacheProvider {
     private val map: ConcurrentHashMap<String, String> = ConcurrentHashMap()
 

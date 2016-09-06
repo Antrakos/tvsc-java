@@ -3,7 +3,6 @@ package com.tvsc.service.util.impl
 import com.tvsc.service.util.HttpUtils
 import com.tvsc.service.util.JsonUtils
 import com.tvsc.service.util.PaginationUtils
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import rx.Observable
 
@@ -12,7 +11,7 @@ import rx.Observable
  * @author Taras Zubrei
  */
 @Component
-open class PaginationUtilsImpl @Autowired constructor(val jsonUtils: JsonUtils, val httpUtils: HttpUtils) : PaginationUtils {
+open class PaginationUtilsImpl constructor(val jsonUtils: JsonUtils, val httpUtils: HttpUtils) : PaginationUtils {
     override fun <T> getFullResponse(url: String, clazz: Class<T>): Observable<T> {
         val urlWithPage = url.plus(if (url.contains('?')) '&' else '?').plus("page=%d")
         return httpUtils.get(url)

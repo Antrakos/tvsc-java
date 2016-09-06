@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 @Primary
-open class JsonUtilsImpl @Autowired constructor(val objectMapper: ObjectMapper) : JsonUtils {
+open class JsonUtilsImpl constructor(val objectMapper: ObjectMapper) : JsonUtils {
 
     override fun <T> getPage(json: String, clazz: Class<T>): Pair<List<T>, Int> = JsonException("Cannot read tree").wrap {
         objectMapper.readerFor(unwrap(list(clazz))).readValue<Page<List<T>>>(json)

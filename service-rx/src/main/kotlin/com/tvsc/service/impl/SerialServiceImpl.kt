@@ -10,7 +10,6 @@ import com.tvsc.service.SerialService
 import com.tvsc.service.UserService
 import com.tvsc.service.util.HttpUtils
 import com.tvsc.service.util.JsonUtils
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import rx.Observable
 import rx.Single
@@ -21,11 +20,11 @@ import rx.lang.kotlin.deferredObservable
  * @author Taras Zubrei
  */
 @Component
-open class SerialServiceImpl @Autowired constructor(val httpUtils: HttpUtils,
-                                                    val jsonUtils: JsonUtils,
-                                                    val serialRepository: SerialRepository,
-                                                    val userService: UserService,
-                                                    val episodeService: EpisodeService) : SerialService {
+open class SerialServiceImpl constructor(val httpUtils: HttpUtils,
+                                         val jsonUtils: JsonUtils,
+                                         val serialRepository: SerialRepository,
+                                         val userService: UserService,
+                                         val episodeService: EpisodeService) : SerialService {
 
     override fun getSerialInfo(id: Long): Single<Serial> = httpUtils.get(Constants.SERIES + id).map { jsonUtils.getSingleObject(it, Serial::class.java) }
 

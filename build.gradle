@@ -48,10 +48,12 @@ ext {
     spring_boot_starter_hateoas = "org.springframework.boot:spring-boot-starter-hateoas:$spring_boot_version"
     spring_boot_starter_actuator = "org.springframework.boot:spring-boot-starter-actuator:$spring_boot_version"
     spring_boot_starter_jdbc = "org.springframework.boot:spring-boot-starter-jdbc:$spring_boot_version"
+    spring_boot_starter_reactive = "org.springframework.boot.experimental:spring-boot-starter-web-reactive:0.1.0.M1"
     moshi = "com.squareup.moshi:moshi:$moshi_version"
     immutables = "org.immutables:value:$immutables_version"
     jetbrains_annotations = "org.jetbrains:annotations:$jetbrains_annotations_version"
     rx_kotlin = "io.reactivex:rxkotlin:$rx_kotlin_version"
+    fuel = "com.github.kittinunf.fuel:fuel-rxjava:$fuel_version"
     async_http_client = "org.asynchttpclient:async-http-client:$async_http_client_version"
     async_http_client_rxjava = "org.asynchttpclient:async-http-client-extras-rxjava:$async_http_client_version"
     jackson_list = [jackson_core, jackson_databind, jackson_datatype_jsr310]
@@ -68,6 +70,7 @@ subprojects {
         mavenCentral()
         maven { url 'https://jitpack.io' }
         maven { url 'https://repo.spring.io/libs-milestone' }
+        maven { url 'https://repo.spring.io/libs-snapshot' }
     }
     dependencies {
         testCompile spring_test, hamcrest, mockito, hsqldb//, junit_list

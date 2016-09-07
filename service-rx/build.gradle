@@ -8,6 +8,5 @@ dependencies {
     }
     compile rx_kotlin
     compile guava
-    compile async_http_client
-    compile (async_http_client_rxjava)
+    compile fuel
 }

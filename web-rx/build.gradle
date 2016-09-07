@@ -1,0 +1,8 @@
+group 'TV Series Compaion'
+dependencies {
+    compile project(':service-rx')
+    compile(spring_boot_starter_actuator) {
+        exclude module: 'spring-web'
+    }
+    compile(spring_boot_starter_reactive)
+}

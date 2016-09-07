@@ -10,4 +10,6 @@ object Constants {
     val EPISODES = "$API/episodes/"
     val ROOT = "data"
     val API_KEY = "CC1D364E3115133D"
+    val REFRESH_TOKEN = "$API/refresh_token"
+    val LOGIN = "$API/login"
 }
